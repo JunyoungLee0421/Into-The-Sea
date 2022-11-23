@@ -1,7 +1,8 @@
 """
 Patty Hsu
 A01280249
-Tim
+Tim(Junyoung) Lee
+A01169132
 """
 
 
