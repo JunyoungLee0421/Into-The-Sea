@@ -48,6 +48,58 @@ def make_board(row, col):
     return board
 
 
+def riddle_events(riddle, player):
+    print("Welcome! Hope you're ready to use your brain in this dolphin approved riddle!")
+    print(riddle['question'])
+    for choice, answer in enumerate(riddle['mc_answers'], start=1):
+        print(choice, answer)
+    if player['level'] == 1:
+        guess_counter = 3
+    elif player['level'] == 2:
+        guess_counter = 2
+    elif player['level'] == 3:
+        guess_counter = 1
+
+    while guess_counter >= 1:
+        guess = input(f"Please select the number corresonding to your answer. You have {guess_counter} tries. If you don't know and would like a hint, press 5. If you'd like to give up, press 6")
+        if guess == riddle['answer']:
+            print("Wow you're so smart! That's the right answer! Exp and morale has increased by 1")
+            player['exp'] += 1
+            player['morale'] += 1
+            return player
+        elif guess == "6":
+            print("Oh no, we're sad to see you go")
+            return player
+        elif guess == "5":
+            print(f"Here's your hint! {riddle['hint']}")
+        else:
+            print("That's not the right answer, try again")
+            guess_counter -= 1
+
+    print("Oh no, you didn't get it! The crew has lost faith in your abilities")
+    player['morale'] -= 1
+    return player
+
+def choice_events(choice, player):
+    print(choice['question'])
+    user_choice = input("Please input 1 for yes or 2 for no")
+    if user_choice == "1":
+        print(choice['yes_choice'])
+        if "increased" in choice['yes_choice']:
+            player['morale'] += 1
+            player['exp'] += 1
+        else:
+            player['morale'] -= 1
+        return player
+    elif user_choice == "2":
+        print(choice['no_choice'])
+        if "increased" in choice['no_choice']:
+            player['morale'] += 1
+            player['exp'] += 1
+        else:
+            player['morale'] -= 1
+        return player
+
 # event > temporary event
 def event(level: str):
     problem_solved = False
