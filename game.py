@@ -6,6 +6,7 @@ A01169132
 """
 
 import random
+import itertools
 
 
 level_1_events = [
@@ -102,6 +103,27 @@ def choice_events(choice, player):
         else:
             player['morale'] -= 1
         return player
+
+
+def battle_events():
+    pass
+
+
+def event_determination(player, board):
+    if board[player['location']] == "event":
+        if player['level'] == 1:
+            event = next(itertools.cycle(level_1_events))
+        elif player['level'] == 2:
+            event = next(itertools.cycle(level_2_events))
+        else:
+            event = next(itertools.cycle(level_3_events))
+
+    if event['type'] == 'riddle':
+        riddle_events(event, player)
+    elif event['type'] == 'choice':
+        choice_events(event, player)
+    else:
+        battle_events(event, player)
 
 
 # event > temporary event
