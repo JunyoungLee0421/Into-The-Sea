@@ -39,6 +39,7 @@ level_3_events = [
     {'event_type': 'choice', 'question': 'A stingray wants to play tag. Play tag with it?', 'yes_choice': "The stringray tagged you with its tail and stung your crew. They're not impressed. Morale has decreased by 1", 'no_choice': "hat's a good choice. Chances are the sting ray would have stung you when tagging you. Morale and exp has increased by 1."},
 ]
 
+
 # make board with 10 x 10, put every room as empty room
 def make_board(row, col):
     board = {}
@@ -51,6 +52,7 @@ def make_board(row, col):
 def riddle_events(riddle, player):
     print("Welcome! Hope you're ready to use your brain in this dolphin approved riddle!")
     print(riddle['question'])
+    guess_counter = 0
     for choice, answer in enumerate(riddle['mc_answers'], start=1):
         print(choice, answer)
     if player['level'] == 1:
@@ -80,6 +82,7 @@ def riddle_events(riddle, player):
     player['morale'] -= 1
     return player
 
+
 def choice_events(choice, player):
     print(choice['question'])
     user_choice = input("Please input 1 for yes or 2 for no")
@@ -100,14 +103,19 @@ def choice_events(choice, player):
             player['morale'] -= 1
         return player
 
+
 # event > temporary event
-def event(level: str):
+def event(level: str, user_info: dict):
     problem_solved = False
     while problem_solved is not True:
         if level == "level_one":
             user_answer = input("Is 1 + 1 = 2? T / F ")
             if user_answer.lower() == "t":
                 print("Congratulations! You solved the problem\n")
+                user_info['exp'] += 1
+                check_player_level(user_info)
+                print(f"Current EXP is {user_info['exp']}")
+                print(f"Current level is {user_info['level']}")
                 problem_solved = True
             else:
                 print("Try again")
@@ -131,11 +139,11 @@ def event(level: str):
 def show_board(board, user_info, past_location):
     player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
     if board[player_location] == "level_one_event":
-        event("level_one")
+        event("level_one", user_info)
     elif board[player_location] == "level_two_event":
-        event("level_two")
+        event("level_two", user_info)
     elif board[player_location] == "level_three_event":
-        event("level_three")
+        event("level_three", user_info)
 
     board[past_location] = "empty_room"
 
@@ -180,11 +188,10 @@ def generate_events(board):
 
 
 # create character with inputs from user
-def create_user(name: str, age: int, gender: str) -> dict:
+def create_user(name: str, ship_name: str) -> dict:
     user_info = {
         'name': name,
-        'age': age,
-        'gender': gender,
+        'ship_name': ship_name,
         'x_coordinate': 0,
         'y_coordinate': 0,
         'level': 1,
@@ -206,6 +213,16 @@ def player_move(user_info, move_input):
     return user_info
 
 
+# check if user can level up
+def check_player_level(user_info):
+    if user_info['exp'] <= 5:
+        user_info['level'] = 1
+    elif 5 < user_info['exp'] <= 10:
+        user_info['level'] = 2
+    else:
+        user_info['level'] = 3
+
+
 # excute the program
 def main():
     # default values
@@ -220,16 +237,9 @@ def main():
     generate_events(game_board)
 
     # get user input
-    user_name = input("Welcome! What is your name? ")
-    user_age = int(input('What is your age? '))
-    while True:
-        user_gender = input('what is your gender? M / F ')
-        if user_gender.lower() not in ('m', 'f'):
-            print("Not an appropriate choice.")
-        else:
-            break
-
-    user_info = create_user(user_name, user_age, user_gender)
+    user_name = input("Welcome! What is your name? : ")
+    ship_name = input("How would you call your ship's name? : ")
+    user_info = create_user(user_name, ship_name)
 
     print(f'Welcome to this new world {user_info["name"]}, it is time to start your advencture')
 
