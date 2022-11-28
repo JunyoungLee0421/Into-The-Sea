@@ -7,72 +7,8 @@ A01169132
 
 import random
 import itertools
+import events
 
-
-level_1_events = [
-    {'event_type': 'riddle', 'question': 'What do you need to break before using? What am I?',
-     'mc_answers': ['an egg', 'a clock', 'a hand', 'a hammer'], 'answer': '1', 'hint': 'You eat these for breakfast'},
-    {'event_type': 'riddle', 'question': 'I’m tall when I’m young, and I’m short when I’m old. What am I?',
-     'mc_answers': ['a tree', 'a waterfall', 'a candle', 'a watch'], 'answer': '3',
-     'hint': 'You light these when the powers out'},
-    {'event_type': 'riddle', 'question': 'How many months of the year has 28 days?',
-     'mc_answers': ['1', '9', '11', '12'], 'answer': '4', 'hint': 'All months have more than 28 days'},
-    {'event_type': 'choice', 'question': 'You see a dolphin in front of your submarine. Do you want to stop and say hi?'
-        , 'yes_choice': 'Your crew loved the dolphin! Morale and exp has increased by 1',
-     'no_choice': "Your crew is upset with you that you didn't stop. Morale has decreased by 1"},
-    {'event_type': 'choice', 'question': 'An oyster shell is open and you see a pearl. Do you want to take the pearl?',
-     'yes_choice': 'The pearl is a nice trophy! Morale and exp increased by 1',
-     'no_choice': 'The crew respects you for not falling to greed. Morale and exp has increased by 1'},
-    {'event_type': 'choice', 'question': 'A baby turtle is stuck in some plastic. Help it out?',
-     'yes_choice': 'The baby turtle gives the ship a high five as thanks! Morale and exp has increased by 1',
-     'no_choice': 'What kind of human are you?! The crew is outraged. Morale has decreased by 1'},
-
-]
-
-level_2_events = [
-    {'event_type': 'riddle', 'question': 'What gets wet while drying?',
-     'mc_answers': ['towel', 'hair', 'skin', 'clothes'], 'answer': '1', 'hint': 'You use this after you shower'},
-    {'event_type': 'riddle', 'question': 'I have branches, but no fruit, trunk or leaves. What am I?',
-     'mc_answers': ['an apple tree', 'a thought', 'a bank', 'a car'], 'answer': '3',
-     'hint': 'You deposit money at this place'},
-    {'event_type': 'riddle', 'question': 'The more of this there is, the less you see. What is it?',
-     'mc_answers': ['darkness', 'sun', 'happiness', 'sadness'], 'answer': '1', 'hint': 'Hello _________ my old friend'},
-    {'event_type': 'choice', 'question': 'A jellyfish is stuck on the hull of the sub. Should we try to shake it off?',
-     'yes_choice': 'All the shaking has made the crew sick and the jellyfish is still there. Morale has decreased by 1',
-     'no_choice': "The jellyfish calmly swam away. Morale and exp has increased by 1"},
-    {'event_type': 'choice', 'question': 'You see some trash floating in the ocean. Pick it up?',
-     'yes_choice': "Great job! People who litter are the worst. Morale aned exp has increased by 1",
-     'no_choice': "You're part of the problem! The crew does not approve. Morale has decreased by 2"},
-    {'event_type': 'choice', 'question': 'Someone in the crew offered you carbonated water. Drink the water?',
-     'yes_choice': "Haven't you learned Chris? Morale has decreased by 1 as have Patty's happiness.",
-     'no_choice': "Wow, I'm impressed! Even though I know it's a lie...Morale and exp has increased by 1"},
-
-]
-
-level_3_events = [
-    {'event_type': 'riddle', 'question': 'David’s parents have 3 sons: Snap, Crackle. What’s the name of their 3rd son?'
-        , 'mc_answers': ['Pop', 'Rice Krispie', 'Snip', 'David'], 'answer': '4', 'hint': 'Starts with a D'},
-    {'event_type': 'riddle', 'question': 'Where does today come before yesterday?',
-     'mc_answers': ['your head', 'the dictionary', 'google', 'apple'], 'answer': '2',
-     'hint': 'Can look for meanings of words in this'},
-    {'event_type': 'riddle', 'question': 'It belongs to you, but other people use it more than you do. What is it?',
-     'mc_answers': ['your name', 'your computer', 'your car', ], 'answer': '1', 'hint':"For you, it's Chris"},
-    {'event_type': 'riddle', 'question': 'What has hands, but can’t clap?',
-     'mc_answers': ['your attitude', 'a clock', 'a map', 'you'], 'answer': '2', 'hint': 'tick, tock, but not tik tok'},
-    {'event_type': 'choice',
-     'question': "One of your crew offers you some radioactive kelp to try. 'It's the bomb man! Take the kelp?",
-     'yes_choice': "the kelp made you sick and you threw up. The crew thinks you're uncool. Morale has decreased by 1",
-     'no_choice': "The crew thinks you're uncool for not taking it. Morale has decreased by 1"},
-    {'event_type': 'choice', 'question': 'OOH a shiny light...should you follow it?',
-     'yes_choice': "You got lured in by an anglerfish. Haven't you seen the movies? Shiny light = bad. "
-                   "The crew is not impressed. Morale has decreased by 1",
-     'no_choice': "Whew you avoided an anglerfish! The crew is thankful. Morale and exp has increased by 1"},
-    {'event_type': 'choice', 'question': 'Tim and Patty have made an awesome game! Do you agree?',
-     'yes_choice': "Thanks :)! Morale and exp has increased by 1", 'no_choice': ":( Morale has decreased by 1"},
-    {'event_type': 'choice', 'question': 'A stingray wants to play tag. Play tag with it?',
-     'yes_choice': "The stringray tagged you with its tail and stung your crew. Morale has decreased by 1",
-     'no_choice': "Good choice. Chances are the sting ray would have stung you. Morale and exp has increased by 1."},
-]
 
 
 # make board with 10 x 10, put every room as empty room
@@ -98,7 +34,8 @@ def riddle_events(riddle, player):
         guess_counter = 1
 
     while guess_counter >= 1:
-        guess = input(f"Please select the number corresonding to your answer. You have {guess_counter} tries. If you don't know and would like a hint, press 5. If you'd like to give up, press 6")
+        guess = input(f"Please select the number corresonding to your answer. You have {guess_counter} tries. "
+                      f"Press 5 for a hint, or press 6 to give up. ")
         if guess == riddle['answer']:
             print("Wow you're so smart! That's the right answer! Exp and morale has increased by 1")
             player['exp'] += 1
@@ -143,7 +80,7 @@ def battle_events():
     pass
 
 
-def determine_event(board, user_info, trial_1, trial_2, trial_3):
+def determine_event(board, user_info, level_1_events, level_2_events, level_3_events):
     player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
     # if board[user_info[user_info]] == "event":
     #     if player['level'] == 1:
@@ -154,11 +91,11 @@ def determine_event(board, user_info, trial_1, trial_2, trial_3):
     #         event = next(itertools.cycle(level_3_events))
 
     if board[player_location] == "level_one_event":
-        event = next(trial_1)
+        event = next(level_1_events)
     elif board[player_location] == "level_two_event":
-        event = next(trial_2)
+        event = next(level_2_events)
     else:
-        event = next(trial_3)
+        event = next(level_3_events)
 
     if event['event_type'] == 'riddle':
         riddle_events(event, user_info)
@@ -233,7 +170,7 @@ def show_board(board, user_info, past_location):
 # generate 30 events and randomly place it into the board.
 def generate_events(board):
     counter = 0
-    while counter < 30:
+    while counter <= 30:
         if counter < 10:
             row = random.randint(1, 3)
             column = random.randint(0, 9)
@@ -249,6 +186,12 @@ def generate_events(board):
             column = random.randint(0, 9)
             board[row, column] = "level_three_event"
             counter += 1
+        elif counter == 30:
+            row = random.randint(7, 9)
+            column = random.randint(0, 9)
+            board[row, column] = "octopus_event"
+            counter += 1
+
 
 
 # create character with inputs from user
@@ -285,14 +228,42 @@ def player_move(user_info, move_input):
         user_info['y_coordinate'] -= 1
     return user_info
 
+#  sonar function to tell users if they're close to octopus
+
+
+def sonar(user_info, game_board):
+    octopus_location = [coordinate for coordinate in game_board if game_board[coordinate] == 'octopus_event']
+    octopus_x_location = octopus_location[0][0]
+    octopus_y_location = octopus_location[1][1]
+    if user_info['x-coordinate'] < octopus_x_location:
+        print("The octopus is to the West of you")
+    elif user_info['x-coordinate'] > octopus_x_location:
+        print("The octopus is to the East of you")
+    else:
+        print("You're in the same column as the octopus")
+
+    if user_info['y-coordinate'] < octopus_y_location:
+        print("The octopus is to the South of you")
+    elif user_info['y-coordinate'] > octopus_y_location:
+        print("The octopus is to the North of you")
+    else:
+        print("You're in the same row as the octopus")
+
 #get user input for direction
-def get_user_choice():
+def get_user_choice(user_info, game_board):
+
     directions = ["north", "south", "east", "west", "quit"]
     print("Curent Available Options : ", end="")
     for count, direction in enumerate(directions, start = 1):
         print(count, direction, end= " ")
     print("")
-    user_input = input("which direction do you want to move? ")
+    if user_info['level'] < 3:
+        user_input = input("Which direction do you want to move? ")
+    else:
+        user_input = input("Which direction do you want to move? Or press 's' for sonar")
+        if user_input == 's':
+            sonar(user_info, game_board)
+            get_user_choice(user_info)
 
     return user_input
 
@@ -340,6 +311,8 @@ def main():
     # place events
     generate_events(game_board)
 
+
+
     # get user input
     user_name = input("Welcome! What is your name? : ")
     ship_name = input("How would you call your ship's name? : ")
@@ -348,13 +321,13 @@ def main():
     print(f'Welcome to this new world {user_info["name"]}, it is time to start your advencture')
 
     show_board(game_board, user_info, (0, 0))
-    test_1 = itertools.cycle(level_1_events)
-    test_2 = itertools.cycle(level_2_events)
-    test_3 = itertools.cycle(level_3_events)
+    level_1_events = itertools.cycle(events.level_1_events)
+    level_2_events = itertools.cycle(events.level_2_events)
+    level_3_events = itertools.cycle(events.level_3_events)
     #game starts
     while achieved_goal is not True:
         # get input from user
-        direction = get_user_choice()
+        direction = get_user_choice(user_info, game_board)
         if direction == "5":
             break
         valid_move = validate_move(user_info, direction)
@@ -371,7 +344,7 @@ def main():
 
             # if user entered a challenge room
             if there_is_a_challenge is True:
-                determine_event(game_board, user_info, test_1, test_2, test_3)
+                determine_event(game_board, user_info, level_1_events, level_2_events, level_3_events)
 
             # show board with new location
             show_board(game_board, user_info, past_location)

@@ -2,17 +2,20 @@ import random
 
 monster_events = {'event_type': 'battle', 'monster_name': 'Jelly the jellyfish', 'hp': 50, 'attack': 2 }
 
-def sonar(octopus_location, player_location):
-    if player_location['x-coordinate'] < octopus_location['x-coordinate']:
+def sonar(user_info, game_board):
+    octopus_location = [coordinate for coordinate in game_board if game_board[coordinate] == 'octopus_event']
+    octopus_x_location = octopus_location[0][0]
+    octopus_y_location = octopus_location[1][1]
+    if user_info['x-coordinate'] < octopus_x_location:
         print("The octopus is to the West of you")
-    elif player_location['x-coordinate'] > octopus_location['x-coordinate']:
+    elif user_info['x-coordinate'] > octopus_x_location:
         print("The octopus is to the East of you")
     else:
         print("You're in the same column as the octopus")
 
-    if player_location['y-coordinate'] < octopus_location['y-coordinate']:
+    if user_info['y-coordinate'] < octopus_y_location:
         print("The octopus is to the South of you")
-    elif player_location['y-coordinate'] > octopus_location['y-coordinate']:
+    elif user_info['y-coordinate'] > octopus_y_location:
         print("The octopus is to the North of you")
     else:
         print("You're in the same row as the octopus")
