@@ -143,7 +143,7 @@ def battle_events():
     pass
 
 
-def event_determination(board, user_info):
+def determine_event(board, user_info, trial_1, trial_2, trial_3):
     player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
     # if board[user_info[user_info]] == "event":
     #     if player['level'] == 1:
@@ -154,11 +154,11 @@ def event_determination(board, user_info):
     #         event = next(itertools.cycle(level_3_events))
 
     if board[player_location] == "level_one_event":
-        event = next(itertools.cycle(level_1_events))
+        event = next(trial_1)
     elif board[player_location] == "level_two_event":
-        event = next(itertools.cycle(level_2_events))
+        event = next(trial_2)
     else:
-        event = next(itertools.cycle(level_3_events))
+        event = next(trial_3)
 
     if event['event_type'] == 'riddle':
         riddle_events(event, user_info)
@@ -348,7 +348,9 @@ def main():
     print(f'Welcome to this new world {user_info["name"]}, it is time to start your advencture')
 
     show_board(game_board, user_info, (0, 0))
-
+    test_1 = itertools.cycle(level_1_events)
+    test_2 = itertools.cycle(level_2_events)
+    test_3 = itertools.cycle(level_3_events)
     #game starts
     while achieved_goal is not True:
         # get input from user
@@ -369,7 +371,7 @@ def main():
 
             # if user entered a challenge room
             if there_is_a_challenge is True:
-                event_determination(game_board, user_info)
+                determine_event(game_board, user_info, test_1, test_2, test_3)
 
             # show board with new location
             show_board(game_board, user_info, past_location)
