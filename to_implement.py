@@ -45,6 +45,5 @@ def battle_event(monster, player):
         return player
 
 
-
-
 def glow_up(player):
+    return True

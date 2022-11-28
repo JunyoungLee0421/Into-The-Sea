@@ -143,63 +143,71 @@ def battle_events():
     pass
 
 
-def event_determination(player, board):
-    if board[player['location']] == "event":
-        if player['level'] == 1:
-            event = next(itertools.cycle(level_1_events))
-        elif player['level'] == 2:
-            event = next(itertools.cycle(level_2_events))
-        else:
-            event = next(itertools.cycle(level_3_events))
+def event_determination(board, user_info):
+    player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
+    # if board[user_info[user_info]] == "event":
+    #     if player['level'] == 1:
+    #         event = next(itertools.cycle(level_1_events))
+    #     elif player['level'] == 2:
+    #         event = next(itertools.cycle(level_2_events))
+    #     else:
+    #         event = next(itertools.cycle(level_3_events))
 
-    if event['type'] == 'riddle':
-        riddle_events(event, player)
-    elif event['type'] == 'choice':
-        choice_events(event, player)
+    if board[player_location] == "level_one_event":
+        event = next(itertools.cycle(level_1_events))
+    elif board[player_location] == "level_two_event":
+        event = next(itertools.cycle(level_2_events))
     else:
-        battle_events(event, player)
+        event = next(itertools.cycle(level_3_events))
+
+    if event['event_type'] == 'riddle':
+        riddle_events(event, user_info)
+    elif event['event_type'] == 'choice':
+        choice_events(event, user_info)
+    else:
+        battle_events(event, user_info)
 
 
 # event > temporary event
-def event(level: str, user_info: dict):
-    problem_solved = False
-    while problem_solved is not True:
-        if level == "level_one":
-            user_answer = input("Is 1 + 1 = 2? T / F ")
-            if user_answer.lower() == "t":
-                print("Congratulations! You solved the problem\n")
-                user_info['exp'] += 1
-                check_player_level(user_info)
-                print(f"Current EXP is {user_info['exp']}")
-                print(f"Current level is {user_info['level']}")
-                problem_solved = True
-            else:
-                print("Try again")
-        elif level == "level_two":
-            user_answer = input("Is 3 X 2 = 5? T / F ")
-            if user_answer.lower() == "f":
-                print("Congratulations! You solved the problem\n")
-                problem_solved = True
-            else:
-                print("Try again")
-        elif level == "level_three":
-            user_answer = input("What is 12 X 5? ")
-            if user_answer == "60":
-                print("Congratulations! You solved the problem\n")
-                problem_solved = True
-            else:
-                print("Try again")
+# def event(level: str, user_info: dict):
+#     problem_solved = False
+#     while problem_solved is not True:
+#         if level == "level_one":
+#             user_answer = input("Is 1 + 1 = 2? T / F ")
+#             if user_answer.lower() == "t":
+#                 print("Congratulations! You solved the problem\n")
+#                 user_info['exp'] += 1
+#                 check_player_level(user_info)
+#                 print(f"Current EXP is {user_info['exp']}")
+#                 print(f"Current level is {user_info['level']}")
+#                 problem_solved = True
+#             else:
+#                 print("Try again")
+#         elif level == "level_two":
+#             user_answer = input("Is 3 X 2 = 5? T / F ")
+#             if user_answer.lower() == "f":
+#                 print("Congratulations! You solved the problem\n")
+#                 problem_solved = True
+#             else:
+#                 print("Try again")
+#         elif level == "level_three":
+#             user_answer = input("What is 12 X 5? ")
+#             if user_answer == "60":
+#                 print("Congratulations! You solved the problem\n")
+#                 problem_solved = True
+#             else:
+#                 print("Try again")
 
 
 # show board with player location on it.
 def show_board(board, user_info, past_location):
     player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
-    if board[player_location] == "level_one_event":
-        event("level_one", user_info)
-    elif board[player_location] == "level_two_event":
-        event("level_two", user_info)
-    elif board[player_location] == "level_three_event":
-        event("level_three", user_info)
+    # if board[player_location] == "level_one_event":
+    #     event("level_one", user_info)
+    # elif board[player_location] == "level_two_event":
+    #     event("level_two", user_info)
+    # elif board[player_location] == "level_three_event":
+    #     event("level_three", user_info)
 
     board[past_location] = "empty_room"
 
@@ -251,23 +259,10 @@ def create_user(name: str, ship_name: str) -> dict:
         'x_coordinate': 0,
         'y_coordinate': 0,
         'level': 1,
-        'exp': 0
+        'exp': 0,
+        'morale': 0
     }
     return user_info
-
-
-# move player location based on the user's input
-def player_move(user_info, move_input):
-    if move_input == "North":
-        user_info['x_coordinate'] -= 1
-    elif move_input == "South":
-        user_info['x_coordinate'] += 1
-    elif move_input == "East":
-        user_info['y_coordinate'] += 1
-    elif move_input == "West":
-        user_info['y_coordinate'] -= 1
-    return user_info
-
 
 # check if user can level up
 def check_player_level(user_info):
@@ -277,6 +272,59 @@ def check_player_level(user_info):
         user_info['level'] = 2
     else:
         user_info['level'] = 3
+
+# move player location based on the user's input
+def player_move(user_info, move_input):
+    if move_input == "1":
+        user_info['x_coordinate'] -= 1
+    elif move_input == "2":
+        user_info['x_coordinate'] += 1
+    elif move_input == "3":
+        user_info['y_coordinate'] += 1
+    elif move_input == "4":
+        user_info['y_coordinate'] -= 1
+    return user_info
+
+#get user input for direction
+def get_user_choice():
+    directions = ["north", "south", "east", "west", "quit"]
+    print("Curent Available Options : ", end="")
+    for count, direction in enumerate(directions, start = 1):
+        print(count, direction, end= " ")
+    print("")
+    user_input = input("which direction do you want to move? ")
+
+    return user_input
+
+#validate user move
+def validate_move(user, direction):
+    player_location = (user['x_coordinate'], user['y_coordinate'])
+    is_valid = True
+    if player_location[0] == 0 and direction == "1":
+        print("You're at the edge already, move in another direction!")
+        is_valid = False
+    elif player_location[0] == 9 and direction == "2":
+        print("You're at the edge already, move in another direction!")
+        is_valid = False
+    elif player_location[1] == 9 and direction == "3":
+        print("You're at the edge already, move in another direction!")
+        is_valid = False
+    elif player_location[1] == 0 and direction == "4":
+        print("You're at the edge already, move in another direction!")
+        is_valid = False
+    return is_valid
+
+#check if there is a challenge
+def check_for_challenges(board, user_info):
+    player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
+    if board[player_location] == "level_one_event":
+        return True
+    elif board[player_location] == "level_two_event":
+        return True
+    elif board[player_location] == "level_three_event":
+        return True
+    else:
+        return False
 
 
 # excute the program
@@ -301,23 +349,30 @@ def main():
 
     show_board(game_board, user_info, (0, 0))
 
+    #game starts
     while achieved_goal is not True:
         # get input from user
-        print("Current availabe option : North, South, East, West")
-        user_input = input("Enter which direction you want to move : ")
-
-        if user_input == "quit":
+        direction = get_user_choice()
+        if direction == "5":
             break
+        valid_move = validate_move(user_info, direction)
 
-        # save the past location
-        past_location = (user_info["x_coordinate"], user_info["y_coordinate"])
+        if valid_move:
+            # save the past location
+            past_location = (user_info["x_coordinate"], user_info["y_coordinate"])
 
-        # update the player location
-        player_move(user_info, user_input)
+            #update the player location
+            player_move(user_info, direction)
 
-        # show board with new location
-        show_board(game_board, user_info, past_location)
+            # check if there is an event
+            there_is_a_challenge = check_for_challenges(game_board, user_info)
 
+            # if user entered a challenge room
+            if there_is_a_challenge is True:
+                event_determination(game_board, user_info)
+
+            # show board with new location
+            show_board(game_board, user_info, past_location)
 
 if __name__ == "__main__":
     main()
