@@ -176,7 +176,7 @@ def battle_events(monster: dict, player: dict) -> dict:
         player['exp'] += 1
         player['morale'] += 1
         player['hp'] = player_current_hp
-    if player ['hp'] <= 0:
+    if player['hp'] <= 0:
         print("OH NO!!! You've perished and the ship is sunk")
         player['death'] = 1
     return player
@@ -207,8 +207,10 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         event = next(level_1_events)
     elif board[player_location] == "level_two_event":
         event = next(level_2_events)
-    else:
+    elif board[player_location] == "level_three_event":
         event = next(level_3_events)
+    else:
+        """octopus event goes here"""
 
     if event['event_type'] == 'riddle':
         riddle_events(event, player)
@@ -311,7 +313,7 @@ def create_user(name: str, sub_name: str) -> dict:
     }
     return player
 
-# check if user can level up
+
 def check_player_level(user_info):
     if user_info['exp'] <= 5:
         user_info['level'] = 1
@@ -396,14 +398,20 @@ def get_user_choice(player: dict, game_board: dict) -> str:
 
     :param player: a dictionary
     :param game_board: a dictionary
-    :precondition:
-    :return:
+    :precondition: player must have a 'level' key in string format with an integer value
+    :postcondition: player will be able to select from a list of directions enumerated
+    :postcondition: 1 north, 2 south, 3 east, 4 west, 5 stats, 6 quit
+    :postcondition: if user_input is 5, it will call the stats function to print user stats, and then call this function
+    again to ask for movement input
+    :postcondition: if user_input is s, it will call the sonar function and then call this function again to ask for
+    movement input
+    :return: user_input as a string
     """
 
     directions = ["north", "south", "east", "west", "stats", "quit"]
     print("Curent Available Options : ", end="")
-    for count, direction in enumerate(directions, start = 1):
-        print(count, direction, end= " ")
+    for count, direction in enumerate(directions, start=1):
+        print(count, direction, end=" ")
     print("")
     if player['level'] < 3:
         user_input = input("Which direction do you want to move? ")
@@ -418,15 +426,40 @@ def get_user_choice(player: dict, game_board: dict) -> str:
 
     return user_input
 
-def stats(player):
+
+def stats(player: dict):
+    """
+    Print player statistics to the player.
+
+    :param player: a dictionary
+    :precondition: player keys must be strings
+    :precondition: player keys must contain 'name', 'sub_name', 'exp', 'morale', 'hp', 'attack'
+    :postcondition: prints a simple statement regarding each of the user stats
+    """
     print(f"{player['name']} captain of the {player['sub_name']}")
     print(f"Exp: {player['exp']}")
     print(f"Morale: {player['morale']}")
     print(f"Battle HP: {player['hp']}")
     print(f"Attack: {player['attack']}")
 
-#validate user move
-def validate_move(player, direction):
+
+def validate_move(player: dict, direction: str) -> bool:
+    """
+    Validate player selected movement to see if they can move in that direction based on their current location.
+
+    :param player: a dictionary
+    :param direction: a string
+    :precondition: player dictionary must contain a key of 'x-coordinate' as a string with an integer value
+    :precondition: player dictionary must contain a key of 'y-coordinate' as a string with an integer value
+    :precondition: direction must be a string containing 1, 2, 3, or 4
+    :precondition: direction 1 indicates moving north, direction 2 indicates moving south,
+    direction 3 indicates moving east, and direction 4 indicates moving west
+    :postcondition: if player x_coordinate is 0 and direction is 1, will tell them it's invalid
+    :postcondition: if player x_coordinate is 9 and direction is 2, will tell them it's invalid
+    :postcondition: if player y_coordinate is 0 and direction is 4, will tell them it's invalid
+    :postcondition: if player y_coordinate is 9 and direction is 3, will tell them it's invalid
+    :return: True if move valid, False if move invalid
+    """
     player_location = (player['x_coordinate'], player['y_coordinate'])
     is_valid = True
     if player_location[0] == 0 and direction == "1":
@@ -443,17 +476,25 @@ def validate_move(player, direction):
         is_valid = False
     return is_valid
 
-#check if there is a challenge
-def check_for_challenges(board, player):
+
+def check_for_challenges(board: dict, player: dict) -> bool:
+    """
+    Check if player current location has an event associated with it.
+
+    :param board: a dictionary
+    :param player: a dictionary
+    :precondition: player dictionary must contain a key of 'x-coordinate' as a string with an integer value
+    :precondition: player dictionary must contain a key of 'y-coordinate' as a string with an integer value
+    :precondition: board dictionary must have tuples containing 2 integer coordinates as keys
+    :precondition: if tuple coordinates have values associated with them, must be formatted as 'empty_room' if empty
+    :postcondition: determines if the current player location on board has an event associated with it
+    :return: True if location on board has event, else False
+    """
     player_location = (player['x_coordinate'], player['y_coordinate'])
-    if board[player_location] == "level_one_event":
-        return True
-    elif board[player_location] == "level_two_event":
-        return True
-    elif board[player_location] == "level_three_event":
-        return True
-    else:
+    if board[player_location] == "empty_room":
         return False
+    else:
+        return True
 
 
 # excute the program
@@ -469,8 +510,6 @@ def main():
     # place events
     generate_events(game_board)
 
-
-
     # get user input
     user_name = input("Welcome! What is your name? : ")
     sub_name = input("What's your submarine's name? : ")
@@ -482,7 +521,7 @@ def main():
     level_1_events = itertools.cycle(events.level_1_events)
     level_2_events = itertools.cycle(events.level_2_events)
     level_3_events = itertools.cycle(events.level_3_events)
-    #game starts
+    # game starts
     while achieved_goal is not True or player['death'] != 1:
         # get input from user
         direction = get_user_choice(player, game_board)
@@ -494,7 +533,7 @@ def main():
             # save the past location
             past_location = (player["x_coordinate"], player["y_coordinate"])
 
-            #update the player location
+            # update the player location
             player_move(player, direction)
 
             # check if there is an event
@@ -509,8 +548,9 @@ def main():
 
     if player['death'] == 1:
         print('ASCII art showing death')
-    if achieved_goal == True:
+    if achieved_goal is True:
         print('ASCII art showing victory')
+
 
 if __name__ == "__main__":
     main()
