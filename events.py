@@ -17,6 +17,9 @@ level_1_events = [
     {'event_type': 'choice', 'question': 'A baby turtle is stuck in some plastic. Help it out?',
      'yes_choice': 'The baby turtle gives the ship a high five as thanks! Morale and exp has increased by 1',
      'no_choice': 'What kind of human are you?! The crew is outraged. Morale has decreased by 1'},
+    {'event_type': 'battle', 'monster_name': 'Jelly the jellyfish', 'hp': 50, 'attack': 10},
+    {'event_type': 'battle', 'monster_name': 'Dory the Amnesia fish', 'hp': 50, 'attack': 8},
+    {'event_type': 'battle', 'monster_name': 'Patrick the starfish', 'hp': 50, 'attack': 7},
 
 ]
 
@@ -37,6 +40,9 @@ level_2_events = [
     {'event_type': 'choice', 'question': 'Someone in the crew offered you carbonated water. Drink the water?',
      'yes_choice': "Haven't you learned Chris? Morale has decreased by 1 as have Patty's happiness.",
      'no_choice': "Wow, I'm impressed! Even though I know it's a lie...Morale and exp has increased by 1"},
+    {'event_type': 'battle', 'monster_name': 'Spongebob the sponge', 'hp': 100, 'attack': 20 },
+    {'event_type': 'battle', 'monster_name': 'Mr. Krabs the king crab', 'hp': 105, 'attack': 25 },
+    {'event_type': 'battle', 'monster_name': 'Plankton the plankton', 'hp': 105, 'attack': 30 },
 
 ]
 
@@ -63,6 +69,10 @@ level_3_events = [
     {'event_type': 'choice', 'question': 'A stingray wants to play tag. Play tag with it?',
      'yes_choice': "The stringray tagged you with its tail and stung your crew. Morale has decreased by 1",
      'no_choice': "Good choice. Chances are the sting ray would have stung you. Morale and exp has increased by 1."},
+    {'event_type': 'battle', 'monster_name': 'Moby the whale', 'hp': 200, 'attack': 35},
+    {'event_type': 'battle', 'monster_name': 'Jaws the great white shark', 'hp': 205, 'attack': 40},
+    {'event_type': 'battle', 'monster_name': 'Greer the phantom shark', 'hp': 210, 'attack': 45},
+    {'event_type': 'battle', 'monster_name': 'Doom the leviathan', 'hp': 220, 'attack': 50},
 ]
 
 random.shuffle(level_1_events)

@@ -76,8 +76,35 @@ def choice_events(choice, player):
         return player
 
 
-def battle_events():
-    pass
+def battle_events(monster, player):
+    print("A challenger has appeared!!!")
+    print(f"{monster['monster_name']} is staring you menacingly down")
+    player_choice = input("Do you want to fight? Press 1 to fight, 2 to run away. ")
+    player_current_hp = player['hp']
+    if player_choice == '1':
+        while monster['hp'] > 0 and player['hp'] > 0:
+            player_attack = input("Fire your torpedoes captain! Type 't' to shoot or 'q' to run away and lose morale ")
+            if player_attack == 't':
+                attack = random.randint(player['attack']-5, player['attack'] + 10)
+                print(f"Your attack hit! It dealt {attack} damage!")
+                monster['hp'] -= attack
+                print(f"{monster['monster_name']} only has {monster['hp']} health left")
+                print(f"{monster['monster_name']} is attacking now!")
+                monster_attack = random.randint(monster['attack'] - 5, monster['attack'] + 5)
+                print(f"Ouch! {monster['monster_name']} hit you for {monster_attack}")
+                player['hp'] -= monster_attack
+                print(f"You only have {player['hp']} health left")
+            elif player_attack == 'q':
+                print("Well, at least you didn't die. Crew has lost morale from the defeat")
+                player['morale'] -= 1
+                return player
+    elif player_choice == '2':
+        print(f"Sometimes running is the best option")
+    print("Great job! You slayed the monster! Morale and exp has increased by 1")
+    player['exp'] += 1
+    player['morale'] += 1
+    player['hp'] = player_current_hp
+    return player
 
 
 def determine_event(board, user_info, level_1_events, level_2_events, level_3_events):
@@ -203,7 +230,9 @@ def create_user(name: str, ship_name: str) -> dict:
         'y_coordinate': 0,
         'level': 1,
         'exp': 0,
-        'morale': 0
+        'morale': 3,
+        'hp': 100,
+        'attack': 20,
     }
     return user_info
 
