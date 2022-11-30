@@ -222,10 +222,10 @@ def generate_events(board):
 
 
 # create character with inputs from user
-def create_user(name: str, ship_name: str) -> dict:
+def create_user(name: str, sub_name: str) -> dict:
     user_info = {
         'name': name,
-        'ship_name': ship_name,
+        'sub_name': sub_name,
         'x_coordinate': 0,
         'y_coordinate': 0,
         'level': 1,
@@ -281,20 +281,30 @@ def sonar(user_info, game_board):
 #get user input for direction
 def get_user_choice(user_info, game_board):
 
-    directions = ["north", "south", "east", "west", "quit"]
+    directions = ["north", "south", "east", "west", "stats", "quit"]
     print("Curent Available Options : ", end="")
     for count, direction in enumerate(directions, start = 1):
         print(count, direction, end= " ")
     print("")
     if user_info['level'] < 3:
         user_input = input("Which direction do you want to move? ")
+        if user_input == '5':
+            stats(user_info)
+            get_user_choice(user_info, game_board)
     else:
         user_input = input("Which direction do you want to move? Or press 's' for sonar")
         if user_input == 's':
             sonar(user_info, game_board)
-            get_user_choice(user_info)
+            get_user_choice(user_info, game_board)
 
     return user_input
+
+def stats(player):
+    print(f"{player['name']} captain of the {player['sub_name']}")
+    print(f"Exp: {player['exp']}")
+    print(f"Morale: {player['morale']}")
+    print(f"Battle HP: {player['hp']}")
+    print(f"Attack: {player['attack']}")
 
 #validate user move
 def validate_move(user, direction):
@@ -344,10 +354,10 @@ def main():
 
     # get user input
     user_name = input("Welcome! What is your name? : ")
-    ship_name = input("How would you call your ship's name? : ")
-    user_info = create_user(user_name, ship_name)
+    sub_name = input("What's your submarine's name? : ")
+    user_info = create_user(user_name, sub_name)
 
-    print(f'Welcome to this new world {user_info["name"]}, it is time to start your advencture')
+    print(f'Welcome to this new world {user_info["name"]}, it is time to start your adventure')
 
     show_board(game_board, user_info, (0, 0))
     level_1_events = itertools.cycle(events.level_1_events)
@@ -357,7 +367,7 @@ def main():
     while achieved_goal is not True:
         # get input from user
         direction = get_user_choice(user_info, game_board)
-        if direction == "5":
+        if direction == "6":
             break
         valid_move = validate_move(user_info, direction)
 
