@@ -10,9 +10,17 @@ import itertools
 import events
 
 
+def make_board(row: int, col: int) -> dict:
+    """
+    Make a board based on given row, col parameters
 
-# make board with 10 x 10, put every room as empty room
-def make_board(row, col):
+    :param row: a positive non-zero integer
+    :param col: a positive non-zero integer
+    :precondition: both row and col must be integers greater than 0
+    :postcondition: create a board with the size of row x column
+    :postcondition: each room created will be given a value of "empty_room"
+    :return: a dictionary
+    """
     board = {}
     for i in range(0, row):
         for j in range(0, col):
@@ -20,7 +28,25 @@ def make_board(row, col):
     return board
 
 
-def riddle_events(riddle, player):
+def riddle_events(riddle: dict, player: dict) -> dict:
+    """
+    Play a riddle game with player
+
+    :param riddle: a dictionary
+    :param player: a dictionary
+    :precondition: riddle dictionary must have a question key with a string value, a mc_answers key with a list value,
+    an answer key with a string value, and a hint key with a string value
+    :precondition: answer key for riddle dictionary must have corresponding number to answer as position of answer in
+    mc_answers
+    :precondition: player dictionary must have a level key with an int value, an exp key with an int value, and a morale
+    key with an int value
+    :postcondition: will print the question and give player the mc_answer options enumerated and ask player to answer
+    :postcondition: player will have option to quit or ask for hints during the playing
+    :postcondition: player will play until their number of tries ore used up or they guess the correct answer
+    :postcondition: player exp and morale will increase if they get the answer correct
+    :postcondition: player morale will decrease if they quit or get the answer wrong
+    :return: player dictionary
+    """
     print("Welcome! Hope you're ready to use your brain in this dolphin approved riddle!")
     print(riddle['question'])
     guess_counter = 0
@@ -55,7 +81,23 @@ def riddle_events(riddle, player):
     return player
 
 
-def choice_events(choice, player):
+def choice_events(choice: dict, player: dict) -> dict:
+    """
+    Play a choice game with a player
+
+    :param choice: a dictionary
+    :param player: a dictionary
+    :precondition: choice dictionary must contain a question key with a string value, a yes_choice key with a string
+    value, a no_choice key with a string value
+    :precondition: the word 'increased' must be used in the correct choice to increase player exp and morale
+    :precondition: player dictionary must have a level key with an int value, an exp key with an int value, and a morale
+    key with an int value
+    :postcondition: will print the value of question key as a question to player
+    :postcondition: player will be given option to answer yes or no to the choice
+    :postcondition: player will be printed yes_choice value if they selected yes, no_choice value if they selected no
+    :postcondition: player exp and morale will be increased if they selected the correct option
+    :return: player dictionary
+    """
     print(choice['question'])
     user_choice = input("Please input 1 for yes or 2 for no")
     if user_choice == "1":
@@ -76,7 +118,32 @@ def choice_events(choice, player):
         return player
 
 
-def battle_events(monster, player):
+def battle_events(monster: dict, player: dict) -> dict:
+    """
+    Play a battle game with a player
+
+    :param monster: a dictionary
+    :param player: a dictionary
+    :precondition: monster dictionary must contain a monster_name key with a string value, a hp key with a positive
+    non-zero integer value, and an attack key with a positive non-zero integer value
+    :precondition: the word 'increased' must be used in the correct choice to increase player exp and morale
+    :precondition: player dictionary must have a level key with an int value, an exp key with an int value, a morale
+    key with an int value, a hp key with a positive non-zero integer value, and an attack key with a positive
+    non-zero integer value
+    :postcondition: will introduce monster to player and give player option to fight or run away
+    :postcondition: if player fights, they will always attack first
+    :postcondition: a random integer generated between player attack value-5 and attack value+10 will
+    be generated as their attack for their turn and dealt to the monster hp
+    :postcondition: the monster will attack next, and a random integer generated between their attack value-5 and
+    attack value+5 will be generated as their attack for their turn and dealt to the monster hp
+    :postcondition: player will be printed out their current hp and monster current hp, and given option to continue
+    fighting or to run away
+    :postcondition: battle will continue until monster hp <= 0 or player hp <= 0 or player runs away
+    :postcondition: if player wins battle, player exp and morale increases
+    :postcondition: if player runs away, player morale decreases
+    :postcondition: if player loses battle they lose the game, an ASCII art will print
+    :return: player dictionary
+    """
     print("A challenger has appeared!!!")
     print(f"{monster['monster_name']} is staring you menacingly down")
     player_choice = input("Do you want to fight? Press 1 to fight, 2 to run away. ")
@@ -100,10 +167,14 @@ def battle_events(monster, player):
                 return player
     elif player_choice == '2':
         print(f"Sometimes running is the best option")
-    print("Great job! You slayed the monster! Morale and exp has increased by 1")
-    player['exp'] += 1
-    player['morale'] += 1
-    player['hp'] = player_current_hp
+    if monster['hp'] <= 0:
+        print("Great job! You slayed the monster! Morale and exp has increased by 1")
+        player['exp'] += 1
+        player['morale'] += 1
+        player['hp'] = player_current_hp
+    if player ['hp'] <= 0:
+        print("OH NO!!! You've perished and the ship is sunk")
+        player['death'] = 1
     return player
 
 
@@ -279,23 +350,23 @@ def sonar(user_info, game_board):
         print("You're in the same row as the octopus")
 
 #get user input for direction
-def get_user_choice(user_info, game_board):
+def get_user_choice(player, game_board):
 
     directions = ["north", "south", "east", "west", "stats", "quit"]
     print("Curent Available Options : ", end="")
     for count, direction in enumerate(directions, start = 1):
         print(count, direction, end= " ")
     print("")
-    if user_info['level'] < 3:
+    if player['level'] < 3:
         user_input = input("Which direction do you want to move? ")
         if user_input == '5':
-            stats(user_info)
-            get_user_choice(user_info, game_board)
+            stats(player)
+            get_user_choice(player, game_board)
     else:
         user_input = input("Which direction do you want to move? Or press 's' for sonar")
         if user_input == 's':
-            sonar(user_info, game_board)
-            get_user_choice(user_info, game_board)
+            sonar(player, game_board)
+            get_user_choice(player, game_board)
 
     return user_input
 
@@ -307,8 +378,8 @@ def stats(player):
     print(f"Attack: {player['attack']}")
 
 #validate user move
-def validate_move(user, direction):
-    player_location = (user['x_coordinate'], user['y_coordinate'])
+def validate_move(player, direction):
+    player_location = (player['x_coordinate'], player['y_coordinate'])
     is_valid = True
     if player_location[0] == 0 and direction == "1":
         print("You're at the edge already, move in another direction!")
@@ -325,8 +396,8 @@ def validate_move(user, direction):
     return is_valid
 
 #check if there is a challenge
-def check_for_challenges(board, user_info):
-    player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
+def check_for_challenges(board, player):
+    player_location = (player['x_coordinate'], player['y_coordinate'])
     if board[player_location] == "level_one_event":
         return True
     elif board[player_location] == "level_two_event":
@@ -355,38 +426,43 @@ def main():
     # get user input
     user_name = input("Welcome! What is your name? : ")
     sub_name = input("What's your submarine's name? : ")
-    user_info = create_user(user_name, sub_name)
+    player = create_user(user_name, sub_name)
 
-    print(f'Welcome to this new world {user_info["name"]}, it is time to start your adventure')
+    print(f'Welcome to this new world {player["name"]}, it is time to start your adventure')
 
-    show_board(game_board, user_info, (0, 0))
+    show_board(game_board, player, (0, 0))
     level_1_events = itertools.cycle(events.level_1_events)
     level_2_events = itertools.cycle(events.level_2_events)
     level_3_events = itertools.cycle(events.level_3_events)
     #game starts
-    while achieved_goal is not True:
+    while achieved_goal is not True or player['death'] != 1:
         # get input from user
-        direction = get_user_choice(user_info, game_board)
+        direction = get_user_choice(player, game_board)
         if direction == "6":
             break
-        valid_move = validate_move(user_info, direction)
+        valid_move = validate_move(player, direction)
 
         if valid_move:
             # save the past location
-            past_location = (user_info["x_coordinate"], user_info["y_coordinate"])
+            past_location = (player["x_coordinate"], player["y_coordinate"])
 
             #update the player location
-            player_move(user_info, direction)
+            player_move(player, direction)
 
             # check if there is an event
-            there_is_a_challenge = check_for_challenges(game_board, user_info)
+            there_is_a_challenge = check_for_challenges(game_board, player)
 
             # if user entered a challenge room
             if there_is_a_challenge is True:
-                determine_event(game_board, user_info, level_1_events, level_2_events, level_3_events)
+                determine_event(game_board, player, level_1_events, level_2_events, level_3_events)
 
             # show board with new location
-            show_board(game_board, user_info, past_location)
+            show_board(game_board, player, past_location)
+
+    if player['death'] == 1:
+        print('ASCII art showing death')
+    if achieved_goal == True:
+        print('ASCII art showing victory')
 
 if __name__ == "__main__":
     main()
