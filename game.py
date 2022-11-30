@@ -12,12 +12,13 @@ import events
 
 def make_board(row: int, col: int) -> dict:
     """
-    Make a board based on given row, col parameters
+    Make a board based on given row, col parameters.
 
     :param row: a positive non-zero integer
     :param col: a positive non-zero integer
     :precondition: both row and col must be integers greater than 0
     :postcondition: create a board with the size of row x column
+    :postcondition: each specific row x column coordinate will be stored as a tuple key
     :postcondition: each room created will be given a value of "empty_room"
     :return: a dictionary
     """
@@ -30,16 +31,17 @@ def make_board(row: int, col: int) -> dict:
 
 def riddle_events(riddle: dict, player: dict) -> dict:
     """
-    Play a riddle game with player
+    Play a riddle game with player.
 
     :param riddle: a dictionary
     :param player: a dictionary
-    :precondition: riddle dictionary must have a question key with a string value, a mc_answers key with a list value,
-    an answer key with a string value, and a hint key with a string value
+    :precondition: player and riddle dictionary keys must be strings
+    :precondition: riddle dictionary must have a 'question' key with a string value, a 'mc_answers' key with a list
+    value, an 'answer' key with a string value, and a 'hint' key with a string value
     :precondition: answer key for riddle dictionary must have corresponding number to answer as position of answer in
     mc_answers
-    :precondition: player dictionary must have a level key with an int value, an exp key with an int value, and a morale
-    key with an int value
+    :precondition: player dictionary must have a 'level' key with an int value, an 'exp' key with an int value, and a
+    'morale' key with an int value
     :postcondition: will print the question and give player the mc_answer options enumerated and ask player to answer
     :postcondition: player will have option to quit or ask for hints during the playing
     :postcondition: player will play until their number of tries ore used up or they guess the correct answer
@@ -83,12 +85,13 @@ def riddle_events(riddle: dict, player: dict) -> dict:
 
 def choice_events(choice: dict, player: dict) -> dict:
     """
-    Play a choice game with a player
+    Play a choice game with a player.
 
     :param choice: a dictionary
     :param player: a dictionary
-    :precondition: choice dictionary must contain a question key with a string value, a yes_choice key with a string
-    value, a no_choice key with a string value
+    :precondition: player and choice dictionary keys must be strings
+    :precondition: choice dictionary must contain a 'question' key with a string value, a 'yes_choice' key with a string
+    value, a 'no_choice' key with a string value
     :precondition: the word 'increased' must be used in the correct choice to increase player exp and morale
     :precondition: player dictionary must have a level key with an int value, an exp key with an int value, and a morale
     key with an int value
@@ -120,10 +123,11 @@ def choice_events(choice: dict, player: dict) -> dict:
 
 def battle_events(monster: dict, player: dict) -> dict:
     """
-    Play a battle game with a player
+    Play a battle game with a player.
 
     :param monster: a dictionary
     :param player: a dictionary
+    :precondition: player and monster dictionary keys must be strings
     :precondition: monster dictionary must contain a monster_name key with a string value, a hp key with a positive
     non-zero integer value, and an attack key with a positive non-zero integer value
     :precondition: the word 'increased' must be used in the correct choice to increase player exp and morale
@@ -178,15 +182,26 @@ def battle_events(monster: dict, player: dict) -> dict:
     return player
 
 
-def determine_event(board, user_info, level_1_events, level_2_events, level_3_events):
-    player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
-    # if board[user_info[user_info]] == "event":
-    #     if player['level'] == 1:
-    #         event = next(itertools.cycle(level_1_events))
-    #     elif player['level'] == 2:
-    #         event = next(itertools.cycle(level_2_events))
-    #     else:
-    #         event = next(itertools.cycle(level_3_events))
+def determine_event(board: dict, player: dict, level_1_events: iter, level_2_events: iter, level_3_events: iter):
+    """
+    Determine what type and which event player will play.
+
+    :param board: a dictionary
+    :param player: a dictionary
+    :param level_1_events: an iterable object containing dictionaries
+    :param level_2_events: an iterable object containing dictionaries
+    :param level_3_events: an iterable object containing dictionaries
+    :precondition: player dictionary must have strings as keys
+    :precondition: board dictionary must have tuples containing 2 integer coordinates as keys
+    :precondition: player dictionary must have an 'x_coordinate' key and a 'y_coordinate' key
+    :precondition: if tuple coordinates have events associated with them, must be formatted as 'level_one_event',
+    'level_two_event', or 'level_three_event'
+    :postcondition: will cycle through a shuffled event list and select an event
+    :postcondition: all event lists must have dictionaries with a key of 'event_type'
+    :postcondition: 'event_type' can have string values of 'riddle', 'choice', or 'battle'
+    :postcondition: will call corresponding functions depending on what even type it is
+    """
+    player_location = (player['x_coordinate'], player['y_coordinate'])
 
     if board[player_location] == "level_one_event":
         event = next(level_1_events)
@@ -196,54 +211,22 @@ def determine_event(board, user_info, level_1_events, level_2_events, level_3_ev
         event = next(level_3_events)
 
     if event['event_type'] == 'riddle':
-        riddle_events(event, user_info)
+        riddle_events(event, player)
     elif event['event_type'] == 'choice':
-        choice_events(event, user_info)
+        choice_events(event, player)
     else:
-        battle_events(event, user_info)
+        battle_events(event, player)
 
 
-# event > temporary event
-# def event(level: str, user_info: dict):
-#     problem_solved = False
-#     while problem_solved is not True:
-#         if level == "level_one":
-#             user_answer = input("Is 1 + 1 = 2? T / F ")
-#             if user_answer.lower() == "t":
-#                 print("Congratulations! You solved the problem\n")
-#                 user_info['exp'] += 1
-#                 check_player_level(user_info)
-#                 print(f"Current EXP is {user_info['exp']}")
-#                 print(f"Current level is {user_info['level']}")
-#                 problem_solved = True
-#             else:
-#                 print("Try again")
-#         elif level == "level_two":
-#             user_answer = input("Is 3 X 2 = 5? T / F ")
-#             if user_answer.lower() == "f":
-#                 print("Congratulations! You solved the problem\n")
-#                 problem_solved = True
-#             else:
-#                 print("Try again")
-#         elif level == "level_three":
-#             user_answer = input("What is 12 X 5? ")
-#             if user_answer == "60":
-#                 print("Congratulations! You solved the problem\n")
-#                 problem_solved = True
-#             else:
-#                 print("Try again")
-
-
-# show board with player location on it.
-def show_board(board, user_info, past_location):
-    player_location = (user_info['x_coordinate'], user_info['y_coordinate'])
-    # if board[player_location] == "level_one_event":
-    #     event("level_one", user_info)
-    # elif board[player_location] == "level_two_event":
-    #     event("level_two", user_info)
-    # elif board[player_location] == "level_three_event":
-    #     event("level_three", user_info)
-
+def show_board(board, player, past_location):
+    """
+    Display board so that players
+    :param board:
+    :param player:
+    :param past_location:
+    :return:
+    """
+    player_location = (player['x_coordinate'], player['y_coordinate'])
     board[past_location] = "empty_room"
 
     for key in board.keys():
@@ -266,7 +249,19 @@ def show_board(board, user_info, past_location):
 
 
 # generate 30 events and randomly place it into the board.
-def generate_events(board):
+def generate_events(board: dict):
+    """
+    Generate random events on game board
+
+    :param board: a dictionary
+    :precondition: board must be a dictionary containing tuples as keys
+    :precondition: tuple keys must contain 2 integer values representing the row and column coordinates respectively
+    :postcondition: modifies the original board passed in
+    :postcondition: from rows 1 to 3 inclusive, will generate a level_one_event as a value to a specific key location
+    :postcondition: from rows 4 to 6 inclusive, will generate a level_two_event as a value to a specific key location
+    :postcondition: from rows 7 to 9 inclusive, will generate a level_three_event as a value to a specific key location
+    :postcondition: from rows 7 to 9 inclusive, will generate an octopus event as a value to a specific key location
+    """
     counter = 0
     while counter <= 30:
         if counter < 10:
@@ -291,13 +286,22 @@ def generate_events(board):
             counter += 1
 
 
-
-# create character with inputs from user
 def create_user(name: str, sub_name: str) -> dict:
-    user_info = {
+    """
+    Create player dictionary with inputs from user.
+
+    :param name: a string
+    :param sub_name: a string
+    :precondition: name and sub_name must be strings
+    :postcondition: creates a player with user inputted name and sub_name
+    :postcondition: all players start at designated location of row 0 column 5
+    :postcondition: all players start at level 1, exp 0, morale 3, hp 100, and attack 20
+    :return: a dictionary containing player info
+    """
+    player = {
         'name': name,
         'sub_name': sub_name,
-        'x_coordinate': 0,
+        'x_coordinate': 5,
         'y_coordinate': 0,
         'level': 1,
         'exp': 0,
@@ -305,7 +309,7 @@ def create_user(name: str, sub_name: str) -> dict:
         'hp': 100,
         'attack': 20,
     }
-    return user_info
+    return player
 
 # check if user can level up
 def check_player_level(user_info):
@@ -316,41 +320,85 @@ def check_player_level(user_info):
     else:
         user_info['level'] = 3
 
+
 # move player location based on the user's input
-def player_move(user_info, move_input):
+def player_move(player: dict, move_input: str) -> dict:
+    """
+    Move player to a new location based on the user's input.
+
+    :param player: a dictionary
+    :param move_input: a string
+    :precondition: player dictionary must contain a key of 'x-coordinate' as a string with an integer value
+    :precondition: player dictionary must contain a key of 'y-coordinate' as a string with an integer value
+    :precondition: move_input can only be strings containing '1', '2', '3', or '4'
+    :postcondition: will subtract player x_coordinate by 1 if input is 1
+    :postcondition: will add player x_coordinate by 1 if input is 2
+    :postcondition: will subtract player y_coordinate by 1 if input is 3
+    :postcondition: will add player y_coordinate by 1 if input is 4
+    :return: player dictionary with new coordinates
+    """
     if move_input == "1":
-        user_info['x_coordinate'] -= 1
+        player['x_coordinate'] -= 1
     elif move_input == "2":
-        user_info['x_coordinate'] += 1
+        player['x_coordinate'] += 1
     elif move_input == "3":
-        user_info['y_coordinate'] += 1
+        player['y_coordinate'] += 1
     elif move_input == "4":
-        user_info['y_coordinate'] -= 1
-    return user_info
-
-#  sonar function to tell users if they're close to octopus
+        player['y_coordinate'] -= 1
+    return player
 
 
-def sonar(user_info, game_board):
+def sonar(player: dict, game_board: dict):
+    """
+    Inform player if they are close to octopus boss.
+
+    :param player: a dictionary
+    :param game_board: a dictionary
+    :precondition: player dictionary must contain a key of 'x-coordinate' as a string with an integer value
+    :precondition: player dictionary must contain a key of 'y-coordinate' as a string with an integer value
+    :precondition: game_board dictionary must contain tuples as keys, and each tuple contains 2 integers
+    :precondition: for each tuple, the 1st integer represents x coordinates, 2nd integer represents y coordinates
+    :precondition: game_board dictionary must have a value of 'octopus_event' as a string
+    :postcondition: determines the x and y locations of octopus by searching for corresponding key with a value of
+    'octopus_event'
+    :postcondition: if player x_coordinate is less than x_location of octopus, prints a string saying
+    "The octopus is to the East of you"
+    :postcondition: if player x_coordinate is greater than x_location of octopus, prints a string saying
+    "The octopus is to the West of you"
+    :postcondition: if player x and octopus x is equal, prints "You're in the same column as the octopus"
+    :postcondition: if player y_coordinate is greater than y_location of octopus, prints a string saying
+    "The octopus is to the North of you"
+    :postcondition: if player y_coordinate is less than y_location of octopus, prints a string saying
+    "The octopus is to the South of you"
+    :postcondition: if player y and octopus y is equal, prints "You're in the same row as the octopus"
+    """
     octopus_location = [coordinate for coordinate in game_board if game_board[coordinate] == 'octopus_event']
     octopus_x_location = octopus_location[0][0]
     octopus_y_location = octopus_location[1][1]
-    if user_info['x-coordinate'] < octopus_x_location:
-        print("The octopus is to the West of you")
-    elif user_info['x-coordinate'] > octopus_x_location:
+    if player['x_coordinate'] < octopus_x_location:
         print("The octopus is to the East of you")
+    elif player['x_coordinate'] > octopus_x_location:
+        print("The octopus is to the West of you")
     else:
         print("You're in the same column as the octopus")
 
-    if user_info['y-coordinate'] < octopus_y_location:
+    if player['y_coordinate'] < octopus_y_location:
         print("The octopus is to the South of you")
-    elif user_info['y-coordinate'] > octopus_y_location:
+    elif player['y_coordinate'] > octopus_y_location:
         print("The octopus is to the North of you")
     else:
         print("You're in the same row as the octopus")
 
-#get user input for direction
-def get_user_choice(player, game_board):
+
+def get_user_choice(player: dict, game_board: dict) -> str:
+    """
+    Get player input for direction they want to move.
+
+    :param player: a dictionary
+    :param game_board: a dictionary
+    :precondition:
+    :return:
+    """
 
     directions = ["north", "south", "east", "west", "stats", "quit"]
     print("Curent Available Options : ", end="")
