@@ -19,9 +19,16 @@ def make_board(row: int, col: int) -> dict:
     :param col: a positive non-zero integer
     :precondition: both row and col must be integers greater than 0
     :postcondition: create a board with the size of row x column
-    :postcondition: each specific row x column coordinate will be stored as a tuple key
+    :postcondition: each specific row x column coordinate will be stored as a tuple key with row first, then column
+    :postcondition: rows and columns will start at 0, and will stop at parameter - 1
     :postcondition: each room created will be given a value of "empty_room"
     :return: a dictionary
+
+    >>> make_board(1, 1)
+    {(0, 0): 'empty_room'}
+
+    >>> make_board(2, 2)
+    {(0, 0): 'empty_room', (0, 1): 'empty_room', (1, 0): 'empty_room', (1, 1): 'empty_room'}
     """
     board = {}
     for i in range(0, row):
@@ -311,14 +318,24 @@ def create_user(name: str, sub_name: str) -> dict:
     :postcondition: all players start at designated location of row 0 column 5
     :postcondition: all players start at level 1, exp 0, morale 3, hp 100, and attack 20
     :return: a dictionary containing player info
+
+    >>> test_name = "Patty"
+    >>> test_sub_name = "Happy"
+    >>> create_user(test_name, test_sub_name)
+    {'name': 'Patty', 'sub_name': 'Happy', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20}
+
+    >>> test_name = "Tim"
+    >>> test_sub_name = "Energized"
+    >>> create_user(test_name, test_sub_name)
+    {'name': 'Tim', 'sub_name': 'Energized', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20}
     """
     player = {
         'name': name,
         'sub_name': sub_name,
         'row': 0,
         'column': 0,
-        'level': 3,
-        'exp': 20,
+        'level': 1,
+        'exp': 0,
         'morale': 3,
         'hp': 100,
         'attack': 20,
@@ -350,6 +367,24 @@ def player_move(player: dict, move_input: str) -> dict:
     :postcondition: will subtract player column by 1 if input is 3
     :postcondition: will add player column by 1 if input is 4
     :return: player dictionary with new coordinates
+
+    >>> test_player = {'row': 1, 'column': 1}
+    >>> move_input = '1'
+    >>> player_move(test_player, move_input)
+    {'row': 0, 'column': 1}
+    >>> test_player = {'row': 1, 'column': 1}
+    >>> move_input = '2'
+    >>> player_move(test_player, move_input)
+    {'row': 2, 'column': 1}
+    >>> test_player = {'row': 1, 'column': 1}
+    >>> move_input = '3'
+    >>> player_move(test_player, move_input)
+    {'row': 1, 'column': 2}
+    >>> test_player = {'row': 1, 'column': 1}
+    >>> move_input = '4'
+    >>> player_move(test_player, move_input)
+    {'row': 1, 'column': 0}
+
     """
     if move_input == "1":
         player['row'] -= 1
@@ -385,6 +420,12 @@ def sonar(player: dict, game_board: dict):
     :postcondition: if player column is less than y_location of octopus, prints a string saying
     "The octopus is to the South of you"
     :postcondition: if player y and octopus y is equal, prints "You're in the same row as the octopus"
+
+    >>> test_game_board = {(0, 0) : 'octopus_event'}
+    >>> test_player = {'row': 0, 'column': 0}
+    >>> sonar(test_player, test_game_board)
+    You're in the same column as the octopus
+    You're in the same row as the octopus
     """
     octopus_location = [coordinate for coordinate in game_board if game_board[coordinate] == 'octopus_event']
     octopus_x_location = octopus_location[0][0]
@@ -404,19 +445,15 @@ def sonar(player: dict, game_board: dict):
         print("You're in the same row as the octopus")
 
 
-def get_user_choice(player: dict, game_board: dict) -> str:
+def get_user_choice(player: dict) -> str:
     """
     Get player input for direction they want to move.
 
     :param player: a dictionary
-    :param game_board: a dictionary
+
     :precondition: player must have a 'level' key in string format with an integer value
     :postcondition: player will be able to select from a list of directions enumerated
-    :postcondition: 1 north, 2 south, 3 east, 4 west, 5 stats, 6 quit
-    :postcondition: if user_input is 5, it will call the stats function to print user stats, and then call this function
-    again to ask for movement input
-    :postcondition: if user_input is s, it will call the sonar function and then call this function again to ask for
-    movement input
+    :postcondition: 1 north, 2 south, 3 east, 4 west, 5 stats, 6 quit, or s for sonar
     :return: user_input as a string
     """
 
@@ -520,7 +557,25 @@ def check_for_challenges(board: dict, player: dict) -> bool:
         return True
 
 
-def determine_row(player):
+def determine_row(player: dict) -> int:
+    """
+    Determine the number of rows to print for game map depending on user level.
+
+    :param player: a dictionary
+    :precondition: player dicitonary must contain a string key 'level' with an integer value of 1, 2, or 3
+    :postcondition: determines the number of rows of the map to show depending on player level
+    :return: an integer representing the rows to show
+
+    >>> test_player = {'level': 1}
+    >>> determine_row(test_player)
+    4
+    >>> test_player = {'level': 2}
+    >>> determine_row(test_player)
+    7
+    >>> test_player = {'level': 3}
+    >>> determine_row(test_player)
+    10
+    """
     if player['level'] == 1:
         rows_to_show = 4
     elif player['level'] == 2:
@@ -531,6 +586,9 @@ def determine_row(player):
 
 
 def intro():
+    """
+    Print dialogue for players to get them oriented to game.
+    """
     print("I am going to go over some instructions with you. Just imagine I'm your friendly neighbourhood dolphin.")
     print(dialogue.intro_1)
     input("Whew that was a lot! Press any button when you're ready to continue ")
