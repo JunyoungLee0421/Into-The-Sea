@@ -369,16 +369,16 @@ def player_move(player: dict, move_input: str) -> dict:
     :return: player dictionary with new coordinates
 
     >>> test_player = {'row': 1, 'column': 1}
-    >>> move_input = '1'
-    >>> player_move(test_player, move_input)
+    >>> test_input = '1'
+    >>> player_move(test_player, test_input)
     {'row': 0, 'column': 1}
     >>> test_player = {'row': 1, 'column': 1}
     >>> move_input = '2'
-    >>> player_move(test_player, move_input)
+    >>> player_move(test_player, test_input)
     {'row': 2, 'column': 1}
     >>> test_player = {'row': 1, 'column': 1}
     >>> move_input = '3'
-    >>> player_move(test_player, move_input)
+    >>> player_move(test_player, test_input)
     {'row': 1, 'column': 2}
     >>> test_player = {'row': 1, 'column': 1}
     >>> move_input = '4'
@@ -470,8 +470,6 @@ def get_user_choice(player: dict) -> str:
     return user_input
 
 
-
-
 def stats(player: dict):
     """
     Print player statistics to the player.
@@ -480,9 +478,18 @@ def stats(player: dict):
     :precondition: player keys must be strings
     :precondition: player keys must contain 'name', 'sub_name', 'exp', 'morale', 'hp', 'attack'
     :postcondition: prints a simple statement regarding each of the user stats
+
+    >>> test_player = {'name': 'Patty', 'sub_name': 'Happy', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20}
+    >>> stats(test_player)
+    Patty captain of the Happy
+    Level: 1
+    Exp: 0
+    Morale: 3
+    Battle HP: 100
+    Attack: 20
     """
     print(f"{player['name']} captain of the {player['sub_name']}")
-    print(f"You are at level {player['level']}")
+    print(f"Level: {player['level']}")
     print(f"Exp: {player['exp']}")
     print(f"Morale: {player['morale']}")
     print(f"Battle HP: {player['hp']}")
