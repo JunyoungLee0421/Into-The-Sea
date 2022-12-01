@@ -10,6 +10,7 @@ import itertools
 import events
 import dialogue
 
+
 def make_board(row: int, col: int) -> dict:
     """
     Make a board based on given row, col parameters.
@@ -193,7 +194,7 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
     :param level_3_events: an iterable object containing dictionaries
     :precondition: player dictionary must have strings as keys
     :precondition: board dictionary must have tuples containing 2 integer coordinates as keys
-    :precondition: player dictionary must have an 'x_coordinate' key and a 'y_coordinate' key
+    :precondition: player dictionary must have an 'row' key and a 'column' key
     :precondition: if tuple coordinates have events associated with them, must be formatted as 'level_one_event',
     'level_two_event', or 'level_three_event'
     :postcondition: will cycle through a shuffled event list and select an event
@@ -201,7 +202,7 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
     :postcondition: 'event_type' can have string values of 'riddle', 'choice', or 'battle'
     :postcondition: will call corresponding functions depending on what even type it is
     """
-    player_location = (player['x_coordinate'], player['y_coordinate'])
+    player_location = (player['row'], player['column'])
     event = {}
     if board[player_location] == "level_one_event":
         event = next(level_1_events)
@@ -230,7 +231,7 @@ def show_board(board, player, past_location, rows_to_show):
     :return:
     """
 
-    player_location = (player['x_coordinate'], player['y_coordinate'])
+    player_location = (player['row'], player['column'])
     board[past_location] = "empty_room"
 
     for key in board.keys():
@@ -314,8 +315,8 @@ def create_user(name: str, sub_name: str) -> dict:
     player = {
         'name': name,
         'sub_name': sub_name,
-        'x_coordinate': 0,
-        'y_coordinate': 0,
+        'row': 0,
+        'column': 0,
         'level': 1,
         'exp': 0,
         'morale': 3,
@@ -344,20 +345,20 @@ def player_move(player: dict, move_input: str) -> dict:
     :precondition: player dictionary must contain a key of 'x-coordinate' as a string with an integer value
     :precondition: player dictionary must contain a key of 'y-coordinate' as a string with an integer value
     :precondition: move_input can only be strings containing '1', '2', '3', or '4'
-    :postcondition: will subtract player x_coordinate by 1 if input is 1
-    :postcondition: will add player x_coordinate by 1 if input is 2
-    :postcondition: will subtract player y_coordinate by 1 if input is 3
-    :postcondition: will add player y_coordinate by 1 if input is 4
+    :postcondition: will subtract player row by 1 if input is 1
+    :postcondition: will add player row by 1 if input is 2
+    :postcondition: will subtract player column by 1 if input is 3
+    :postcondition: will add player column by 1 if input is 4
     :return: player dictionary with new coordinates
     """
     if move_input == "1":
-        player['x_coordinate'] -= 1
+        player['row'] -= 1
     elif move_input == "2":
-        player['x_coordinate'] += 1
+        player['row'] += 1
     elif move_input == "3":
-        player['y_coordinate'] += 1
+        player['column'] += 1
     elif move_input == "4":
-        player['y_coordinate'] -= 1
+        player['column'] -= 1
     return player
 
 
@@ -374,30 +375,30 @@ def sonar(player: dict, game_board: dict):
     :precondition: game_board dictionary must have a value of 'octopus_event' as a string
     :postcondition: determines the x and y locations of octopus by searching for corresponding key with a value of
     'octopus_event'
-    :postcondition: if player x_coordinate is less than x_location of octopus, prints a string saying
+    :postcondition: if player row is less than x_location of octopus, prints a string saying
     "The octopus is to the East of you"
-    :postcondition: if player x_coordinate is greater than x_location of octopus, prints a string saying
+    :postcondition: if player row is greater than x_location of octopus, prints a string saying
     "The octopus is to the West of you"
     :postcondition: if player x and octopus x is equal, prints "You're in the same column as the octopus"
-    :postcondition: if player y_coordinate is greater than y_location of octopus, prints a string saying
+    :postcondition: if player column is greater than y_location of octopus, prints a string saying
     "The octopus is to the North of you"
-    :postcondition: if player y_coordinate is less than y_location of octopus, prints a string saying
+    :postcondition: if player column is less than y_location of octopus, prints a string saying
     "The octopus is to the South of you"
     :postcondition: if player y and octopus y is equal, prints "You're in the same row as the octopus"
     """
     octopus_location = [coordinate for coordinate in game_board if game_board[coordinate] == 'octopus_event']
     octopus_x_location = octopus_location[0][0]
     octopus_y_location = octopus_location[1][1]
-    if player['x_coordinate'] < octopus_x_location:
+    if player['row'] < octopus_x_location:
         print("The octopus is to the East of you")
-    elif player['x_coordinate'] > octopus_x_location:
+    elif player['row'] > octopus_x_location:
         print("The octopus is to the West of you")
     else:
         print("You're in the same column as the octopus")
 
-    if player['y_coordinate'] < octopus_y_location:
+    if player['column'] < octopus_y_location:
         print("The octopus is to the South of you")
-    elif player['y_coordinate'] > octopus_y_location:
+    elif player['column'] > octopus_y_location:
         print("The octopus is to the North of you")
     else:
         print("You're in the same row as the octopus")
@@ -465,30 +466,30 @@ def validate_move(player: dict, direction: str) -> bool:
     :precondition: direction must be a string containing 1, 2, 3, or 4
     :precondition: direction 1 indicates moving north, direction 2 indicates moving south,
     direction 3 indicates moving east, and direction 4 indicates moving west
-    :postcondition: if player x_coordinate is 0 and direction is 1, will tell them it's invalid
-    :postcondition: if player x_coordinate is 9 and direction is 2, will tell them it's invalid
-    :postcondition: if player y_coordinate is 0 and direction is 4, will tell them it's invalid
-    :postcondition: if player y_coordinate is 9 and direction is 3, will tell them it's invalid
+    :postcondition: if player row is 0 and direction is 1, will tell them it's invalid
+    :postcondition: if player row is 9 and direction is 2, will tell them it's invalid
+    :postcondition: if player column is 0 and direction is 4, will tell them it's invalid
+    :postcondition: if player column is 9 and direction is 3, will tell them it's invalid
     :return: True if move valid, False if move invalid
     """
     is_valid = True
-    if player['x_coordinate'] == 0 and direction == "1":
+    if player['row'] == 0 and direction == "1":
         print("You're at the edge already, move in another direction!")
         is_valid = False
-    elif player['x_coordinate'] == 9 and direction == "2":
+    elif player['row'] == 9 and direction == "2":
         print("You're at the edge already, move in another direction!")
         is_valid = False
-    elif player['y_coordinate'] == 9 and direction == "3":
+    elif player['column'] == 9 and direction == "3":
         print("You're at the edge already, move in another direction!")
         is_valid = False
-    elif player['y_coordinate'] == 0 and direction == "4":
+    elif player['column'] == 0 and direction == "4":
         print("You're at the edge already, move in another direction!")
         is_valid = False
 
-    if player['level'] == 1 and player['x_coordinate'] == 3 and direction == "2":
+    if player['level'] == 1 and player['row'] == 3 and direction == "2":
         print("You're not strong enough to go there yet! Pick another direction")
         is_valid = False
-    if player['level'] == 2 and player['x_coordinate'] == 6 and direction == "2":
+    if player['level'] == 2 and player['row'] == 6 and direction == "2":
         is_valid = False
 
     return is_valid
@@ -507,7 +508,7 @@ def check_for_challenges(board: dict, player: dict) -> bool:
     :postcondition: determines if the current player location on board has an event associated with it
     :return: True if location on board has event, else False
     """
-    player_location = (player['x_coordinate'], player['y_coordinate'])
+    player_location = (player['row'], player['column'])
     if board[player_location] == "empty_room":
         return False
     else:
@@ -574,7 +575,7 @@ def main():
 
         if valid_move:
             # save the past location
-            past_location = (player["x_coordinate"], player["y_coordinate"])
+            past_location = (player["row"], player["column"])
 
             # update the player location
             player_move(player, direction)
