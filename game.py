@@ -220,14 +220,16 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         battle_events(event, player)
 
 
-def show_board(board, player, past_location):
+def show_board(board, player, past_location, rows_to_show):
     """
     Display board so that players
     :param board:
     :param player:
     :param past_location:
+    :param rows_to_show:
     :return:
     """
+
     player_location = (player['x_coordinate'], player['y_coordinate'])
     board[past_location] = "empty_room"
 
@@ -235,7 +237,7 @@ def show_board(board, player, past_location):
         if key == player_location:
             board[key] = "player_location"
 
-    for row in range(0, 10):
+    for row in range(0, rows_to_show):
         for col in range(0, 10):
             if board[(row, col)] == "player_location":
                 print("\033[33m|X|\033[0m", end=" ")
@@ -243,11 +245,20 @@ def show_board(board, player, past_location):
                 print("\033[32m|!|\033[0m", end=" ")
             elif board[(row, col)] == "level_two_event":
                 print("\033[34m|!|\033[0m", end=" ")
-            elif board[(row, col)] == "level_three_event":
-                print("\033[31m|!|\033[0m", end=" ")
             else:
                 print("|_|", end=" ")
         print()
+
+    if 10 - rows_to_show != 0:
+        for row in range(rows_to_show, 10):
+            for col in range(0, 10):
+                if col == 0:
+                    print("|  ", end=" ")
+                elif col == 9:
+                    print("  |", end=" ")
+                else:
+                    print("   ", end=" ")
+            print()
 
 
 # generate 30 events and randomly place it into the board.
@@ -303,9 +314,9 @@ def create_user(name: str, sub_name: str) -> dict:
     player = {
         'name': name,
         'sub_name': sub_name,
-        'x_coordinate': 5,
+        'x_coordinate': 0,
         'y_coordinate': 0,
-        'level': 1,
+        'level': 2,
         'exp': 0,
         'morale': 3,
         'hp': 100,
@@ -409,7 +420,7 @@ def get_user_choice(player: dict, game_board: dict) -> str:
     """
 
     directions = ["north", "south", "east", "west", "stats", "quit"]
-    print("Curent Available Options : ", end="")
+    print("Current Available Options : ", end="")
     for count, direction in enumerate(directions, start=1):
         print(count, direction, end=" ")
     print("")
@@ -497,6 +508,15 @@ def check_for_challenges(board: dict, player: dict) -> bool:
         return True
 
 
+def determine_row(player):
+    if player['level'] == 1:
+        rows_to_show = 4
+    elif player['level'] == 2:
+        rows_to_show = 7
+    else:
+        rows_to_show = 10
+    return rows_to_show
+
 # excute the program
 def main():
     # default values
@@ -517,7 +537,8 @@ def main():
 
     print(f'Welcome to this new world {player["name"]}, it is time to start your adventure')
 
-    show_board(game_board, player, (0, 0))
+    rows_to_show = determine_row(player)
+    show_board(game_board, player, (0, 0), rows_to_show)
     level_1_events = itertools.cycle(events.level_1_events)
     level_2_events = itertools.cycle(events.level_2_events)
     level_3_events = itertools.cycle(events.level_3_events)
@@ -543,8 +564,12 @@ def main():
             if there_is_a_challenge is True:
                 determine_event(game_board, player, level_1_events, level_2_events, level_3_events)
 
+            # check if player leveled up
+            check_player_level(player)
+            # determine rows to show
+            rows_to_show = determine_row(player)
             # show board with new location
-            show_board(game_board, player, past_location)
+            show_board(game_board, player, past_location, rows_to_show)
 
     if player['death'] == 1:
         print('ASCII art showing death')
