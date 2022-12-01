@@ -24,7 +24,8 @@ level_2_up = "Congratulations on reaching level 2! You’ve successfully gotten 
 level_3_up = "You’ve reached level 3! Unfortunately, no matter your headlight strength, you won’t be able to see \n" \
              "to the bottom. No worries though, with this sonar, you’ll be able to locate where the octopus is \n" \
              "relative to you. You now have an extra sonar option to choose when you move. Try it out next when \n" \
-             "you select your move!"
+             "you select your move! Use this sonar to find the octopus to complete the final challenge. Be aware, \n" \
+             "there are still many monsters lurking in the deep that are stronger than they've ever been...\n "
 
 help = ""
 

@@ -217,7 +217,7 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         riddle_events(event, player)
     elif event['event_type'] == 'choice':
         choice_events(event, player)
-    else:
+    elif event['event_type'] == 'battle':
         battle_events(event, player)
 
 
@@ -317,7 +317,7 @@ def create_user(name: str, sub_name: str) -> dict:
         'sub_name': sub_name,
         'row': 0,
         'column': 0,
-        'level': 1,
+        'level': 3,
         'exp': 0,
         'morale': 3,
         'hp': 100,
@@ -388,7 +388,7 @@ def sonar(player: dict, game_board: dict):
     """
     octopus_location = [coordinate for coordinate in game_board if game_board[coordinate] == 'octopus_event']
     octopus_x_location = octopus_location[0][0]
-    octopus_y_location = octopus_location[1][1]
+    octopus_y_location = octopus_location[0][1]
     if player['row'] < octopus_x_location:
         print("The octopus is to the East of you")
     elif player['row'] > octopus_x_location:
@@ -427,16 +427,18 @@ def get_user_choice(player: dict, game_board: dict) -> str:
     print("")
     if player['level'] < 3:
         user_input = input("Which direction do you want to move? ")
-        if user_input == '5':
-            stats(player)
-            get_user_choice(player, game_board)
     else:
-        user_input = input("Which direction do you want to move? Or press 's' for sonar")
+        user_input = input("Which direction do you want to move? Or press 's' for sonar ")
         if user_input == 's':
             sonar(player, game_board)
             get_user_choice(player, game_board)
+        if user_input == '5':
+            stats(player)
+            get_user_choice(player, game_board)
 
     return user_input
+
+
 
 
 def stats(player: dict):
@@ -449,13 +451,14 @@ def stats(player: dict):
     :postcondition: prints a simple statement regarding each of the user stats
     """
     print(f"{player['name']} captain of the {player['sub_name']}")
+    print(f"You are at level {player['level']}")
     print(f"Exp: {player['exp']}")
     print(f"Morale: {player['morale']}")
     print(f"Battle HP: {player['hp']}")
     print(f"Attack: {player['attack']}")
 
 
-def validate_move(player: dict, direction: str) -> bool:
+def validate_move(player: dict, direction: str, board: dict) -> bool:
     """
     Validate player selected movement to see if they can move in that direction based on their current location.
 
@@ -490,6 +493,13 @@ def validate_move(player: dict, direction: str) -> bool:
         print("You're not strong enough to go there yet! Pick another direction")
         is_valid = False
     if player['level'] == 2 and player['row'] == 6 and direction == "2":
+        is_valid = False
+
+    if direction == "5":
+        stats(player)
+        is_valid = False
+    if direction == "s":
+        sonar(player, board)
         is_valid = False
 
     return is_valid
@@ -571,7 +581,7 @@ def main():
         direction = get_user_choice(player, game_board)
         if direction == "6":
             break
-        valid_move = validate_move(player, direction)
+        valid_move = validate_move(player, direction, game_board)
 
         if valid_move:
             # save the past location
