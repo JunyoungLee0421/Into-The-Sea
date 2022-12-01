@@ -8,7 +8,7 @@ A01169132
 import random
 import itertools
 import events
-
+import dialogue
 
 def make_board(row: int, col: int) -> dict:
     """
@@ -523,6 +523,18 @@ def determine_row(player):
         rows_to_show = 10
     return rows_to_show
 
+
+def intro():
+    print("I am going to go over some instructions with you. Just imagine I'm your friendly neighbourhood dolphin.")
+    print(dialogue.intro_1)
+    input("Whew that was a lot! Press any button when you're ready to continue ")
+    print()
+    print(dialogue.intro_2)
+    input("I'm just trying to keep you alive! Press any button when you're done reading ")
+    print()
+    print(dialogue.intro_3)
+    input("Are you ready for a test? Jk, press any button to start. Have fun\n")
+
 # excute the program
 def main():
     # default values
@@ -541,8 +553,12 @@ def main():
     sub_name = input("What's your submarine's name? : ")
     player = create_user(user_name, sub_name)
 
-    print(f'Welcome to this new world {player["name"]}, it is time to start your adventure')
+    print(f"Welcome to this new world {player['name']}, We’re glad to have you on board.")
+    print("Your crew is excited for the expedition to find the long lost treasure of CST Student Souls "
+          "buried deep in the ocean.")
 
+    print()
+    intro()
     rows_to_show = determine_row(player)
     show_board(game_board, player, (0, 0), rows_to_show)
     level_1_events = itertools.cycle(events.level_1_events)
