@@ -373,16 +373,16 @@ def player_move(player: dict, move_input: str) -> dict:
     >>> player_move(test_player, test_input)
     {'row': 0, 'column': 1}
     >>> test_player = {'row': 1, 'column': 1}
-    >>> move_input = '2'
+    >>> test_input = '2'
     >>> player_move(test_player, test_input)
     {'row': 2, 'column': 1}
     >>> test_player = {'row': 1, 'column': 1}
-    >>> move_input = '3'
+    >>> test_input = '3'
     >>> player_move(test_player, test_input)
     {'row': 1, 'column': 2}
     >>> test_player = {'row': 1, 'column': 1}
-    >>> move_input = '4'
-    >>> player_move(test_player, move_input)
+    >>> test_input = '4'
+    >>> player_move(test_player, test_input)
     {'row': 1, 'column': 0}
 
     """
