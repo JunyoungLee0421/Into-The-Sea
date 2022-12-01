@@ -202,7 +202,7 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
     :postcondition: will call corresponding functions depending on what even type it is
     """
     player_location = (player['x_coordinate'], player['y_coordinate'])
-
+    event = {}
     if board[player_location] == "level_one_event":
         event = next(level_1_events)
     elif board[player_location] == "level_two_event":
@@ -316,7 +316,7 @@ def create_user(name: str, sub_name: str) -> dict:
         'sub_name': sub_name,
         'x_coordinate': 0,
         'y_coordinate': 0,
-        'level': 2,
+        'level': 1,
         'exp': 0,
         'morale': 3,
         'hp': 100,
@@ -471,20 +471,26 @@ def validate_move(player: dict, direction: str) -> bool:
     :postcondition: if player y_coordinate is 9 and direction is 3, will tell them it's invalid
     :return: True if move valid, False if move invalid
     """
-    player_location = (player['x_coordinate'], player['y_coordinate'])
     is_valid = True
-    if player_location[0] == 0 and direction == "1":
+    if player['x_coordinate'] == 0 and direction == "1":
         print("You're at the edge already, move in another direction!")
         is_valid = False
-    elif player_location[0] == 9 and direction == "2":
+    elif player['x_coordinate'] == 9 and direction == "2":
         print("You're at the edge already, move in another direction!")
         is_valid = False
-    elif player_location[1] == 9 and direction == "3":
+    elif player['y_coordinate'] == 9 and direction == "3":
         print("You're at the edge already, move in another direction!")
         is_valid = False
-    elif player_location[1] == 0 and direction == "4":
+    elif player['y_coordinate'] == 0 and direction == "4":
         print("You're at the edge already, move in another direction!")
         is_valid = False
+
+    if player['level'] == 1 and player['x_coordinate'] == 3 and direction == "2":
+        print("You're not strong enough to go there yet! Pick another direction")
+        is_valid = False
+    if player['level'] == 2 and player['x_coordinate'] == 6 and direction == "2":
+        is_valid = False
+
     return is_valid
 
 
