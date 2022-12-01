@@ -318,7 +318,7 @@ def create_user(name: str, sub_name: str) -> dict:
         'row': 0,
         'column': 0,
         'level': 3,
-        'exp': 0,
+        'exp': 20,
         'morale': 3,
         'hp': 100,
         'attack': 20,
@@ -429,12 +429,6 @@ def get_user_choice(player: dict, game_board: dict) -> str:
         user_input = input("Which direction do you want to move? ")
     else:
         user_input = input("Which direction do you want to move? Or press 's' for sonar ")
-        if user_input == 's':
-            sonar(player, game_board)
-            get_user_choice(player, game_board)
-        if user_input == '5':
-            stats(player)
-            get_user_choice(player, game_board)
 
     return user_input
 
@@ -493,6 +487,7 @@ def validate_move(player: dict, direction: str, board: dict) -> bool:
         print("You're not strong enough to go there yet! Pick another direction")
         is_valid = False
     if player['level'] == 2 and player['row'] == 6 and direction == "2":
+        print("You're not strong enough to go there yet! Pick another direction")
         is_valid = False
 
     if direction == "5":
