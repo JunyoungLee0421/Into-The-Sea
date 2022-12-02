@@ -338,8 +338,8 @@ def create_user(name: str, sub_name: str) -> dict:
         'sub_name': sub_name,
         'row': 0,
         'column': 0,
-        'level': 3,
-        'exp': 10,
+        'level': 1,
+        'exp': 0,
         'morale': 3,
         'hp': 100,
         'attack': 20,
@@ -429,8 +429,8 @@ def sonar(player: dict, game_board: dict):
     >>> test_game_board = {(0, 0) : 'octopus_event'}
     >>> test_player = {'row': 0, 'column': 0}
     >>> sonar(test_player, test_game_board)
-    You're in the same column as the octopus
     You're in the same row as the octopus
+    You're in the same column as the octopus
     """
     octopus_location = [coordinate for coordinate in game_board if game_board[coordinate] == 'octopus_event']
     octopus_row = octopus_location[0][0]
@@ -586,7 +586,7 @@ def determine_row(player: dict) -> int:
     7
     >>> test_player = {'level': 3}
     >>> determine_row(test_player)
-    10
+    7
     """
     rows_to_show = 0
     if player['level'] == 1:
