@@ -638,7 +638,7 @@ def main():
     # game starts
     while achieved_goal is not True or player['death'] != 1:
         # get input from user
-        direction = get_user_choice(player, game_board)
+        direction = get_user_choice(player)
         if direction == "6":
             break
         valid_move = validate_move(player, direction, game_board)
