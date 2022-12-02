@@ -16,6 +16,9 @@ intro_2 = "There are 2 main ways to lose this game: losing all your crew morale 
 intro_3 = "If you look at your submarine map right now, you can only see shallow waters. That’s because we’ve \n"\
           "lost our submarine headlights somewhere in these waters. Gain the headlights by leveling up to level 2! \n" \
 
+level_up_ASCII = ""
+
+
 level_2_up = "Congratulations on reaching level 2! You’ve successfully gotten your subs headlights back so you’re \n" \
              "able to see slightly deeper into the ocean now. Your stats have leveled up and you’ll be able to \n" \
              "fight tougher monsters. Be aware, these monsters deeper down are going to be tougher than before \n. " \
@@ -27,10 +30,37 @@ level_3_up = "You’ve reached level 3! Unfortunately, no matter your headlight 
              "you select your move! Use this sonar to find the octopus to complete the final challenge. Be aware, \n" \
              "there are still many monsters lurking in the deep that are stronger than they've ever been...\n "
 
-help = ""
 
-octopus_game = "explain the guessing number game"
+octopus_game = "WOOOOO look who's here!! A challenger? I can't wait to rip into you with my squiggly limbs.\n"\
+               "What? You're here for this treasure? Not even a hello Mr. Octopus nice to meet you? How rude!\n" \
+               "You're lucky I'm in a happy mood today. I'll play a guessing game with you.\n"\
+               "I'm thinking of a 3 digit number. All you have to do is guess it. I'll even give you hints cuz \n"\
+               "you look like you need them.\n"\
+               "\n"\
+               "The 3 digits range from 0-9, except for the 1st digit, which cannot be a 0.\n"\
+               "Everytime you guess, I'll tell you how close you are to the number by using the letters A and B\n"\
+               "'A' means one of the digits you guessed is in the right position and it's the correct number\n"\
+               "'B' means one of the digits you guessed is a number that's also in my answer, " \
+               "but it's in the wrong position\n"\
+               "\n"\
+               "For example, if my number is 132, and you guessed 123, my hint to you would be 1A 2B. \n"\
+               "1A because you guessed the 1 in the correct first position and correct number. \n"\
+               "2B because you guessed the 2 and 3 numbers, but they are in the wrong positions. \n" \
+               "If my number was 132, and you guessed 425, my hint to you would be 1B, as the 2 is the right number,\n"\
+               "but you guessed in the wrong position.\n"\
+               "If my number was 132 and you had guessed 456, my hint to you would be 0A 0B as no numbers are right\n" \
+                "\n"\
+               "Take your time reading this. Remember, if you lose, you stay down here with me forever! MUAHAHA \n" \
+               "When you're ready, press any key to start."
 
-you_win = ""
+octopus_trash_talk = ["You call that a guess? My friend Urch the urchin does better and he doesn't even have a brain!",
+                      "Ha, you'll definitely be staying down here with me, no carbonated water for you down here!",
+                      "Most PC users would have gotten this already...you must use a MAC",
+                      "Better start thinking of how you're going to spend your free time down here...there's no WIFI",
+                      "You must want to stay down here with how bad your guesses are",
+                      "Patrick the Star would have gotten this already, just saying.",
+                      "Just give up already, you're never going to get it!"]
 
-you_lose = ""
+you_win_ASCII = ""
+
+you_lose_ASCII = ""
