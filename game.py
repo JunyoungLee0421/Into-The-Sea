@@ -59,16 +59,10 @@ def riddle_events(riddle: dict, player: dict) -> dict:
     """
     print("Welcome! Hope you're ready to use your brain in this dolphin approved riddle!")
     print(riddle['question'])
-    guess_counter = 0
     for choice, answer in enumerate(riddle['mc_answers'], start=1):
         print(choice, answer)
-    if player['level'] == 1:
-        guess_counter = 3
-    elif player['level'] == 2:
-        guess_counter = 2
-    elif player['level'] == 3:
-        guess_counter = 1
 
+    guess_counter = player['guesses']
     while guess_counter >= 1:
         guess = input(f"Please select the number corresonding to your answer. You have {guess_counter} tries. "
                       f"Press 5 for a hint, or press 6 to give up. ")
@@ -326,12 +320,12 @@ def create_user(name: str, sub_name: str) -> dict:
     >>> test_name = "Patty"
     >>> test_sub_name = "Happy"
     >>> create_user(test_name, test_sub_name)
-    {'name': 'Patty', 'sub_name': 'Happy', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20}
+    {'name': 'Patty', 'sub_name': 'Happy', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20, 'guesses': 3, 'treasure': False, 'death': False}
 
     >>> test_name = "Tim"
     >>> test_sub_name = "Energized"
     >>> create_user(test_name, test_sub_name)
-    {'name': 'Tim', 'sub_name': 'Energized', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20}
+    {'name': 'Tim', 'sub_name': 'Energized', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20, 'guesses': 3, 'treasure': False, 'death': False}
     """
     player = {
         'name': name,
@@ -343,7 +337,9 @@ def create_user(name: str, sub_name: str) -> dict:
         'morale': 3,
         'hp': 100,
         'attack': 20,
-        'treasure': 0
+        'guesses': 3,
+        'treasure': False,
+        'death': False,
     }
     return player
 
@@ -507,6 +503,7 @@ def validate_move(player: dict, direction: str, board: dict) -> bool:
 
     :param player: a dictionary
     :param direction: a string
+    :param board: a dictionary
     :precondition: player dictionary must contain a key of 'x-coordinate' as a string with an integer value
     :precondition: player dictionary must contain a key of 'y-coordinate' as a string with an integer value
     :precondition: direction must be a string containing 1, 2, 3, or 4
