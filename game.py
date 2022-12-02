@@ -11,12 +11,12 @@ import events
 import dialogue
 
 
-def make_board(row: int, col: int) -> dict:
+def make_board(rows: int, columns: int) -> dict:
     """
     Make a board based on given row, col parameters.
 
-    :param row: a positive non-zero integer
-    :param col: a positive non-zero integer
+    :param rows: a positive non-zero integer
+    :param columns: a positive non-zero integer
     :precondition: both row and col must be integers greater than 0
     :postcondition: create a board with the size of row x column
     :postcondition: each specific row x column coordinate will be stored as a tuple key with row first, then column
@@ -31,9 +31,9 @@ def make_board(row: int, col: int) -> dict:
     {(0, 0): 'empty_room', (0, 1): 'empty_room', (1, 0): 'empty_room', (1, 1): 'empty_room'}
     """
     board = {}
-    for i in range(0, row):
-        for j in range(0, col):
-            board[(i, j)] = "empty_room"
+    for row in range(0, rows):
+        for column in range(0, columns):
+            board[(row, column)] = "empty_room"
     return board
 
 
@@ -217,8 +217,8 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         event = next(level_2_events)
     elif board[player_location] == "level_three_event":
         event = next(level_3_events)
-    else:
-        """octopus event goes here"""
+    elif board[player_location] == "octopus_event":
+        final_game(player)
 
     if event['event_type'] == 'riddle':
         riddle_events(event, player)
@@ -260,7 +260,11 @@ def show_board(board, player, past_location, rows_to_show):
     if 10 - rows_to_show != 0:
         for row in range(rows_to_show, 10):
             for col in range(0, 10):
-                if col == 0:
+                if board[(row, col)] == "player_location":
+                    print("\033[33m|X|\033[0m", end=" ")
+                elif board[(row, col)] == "octopus_event":
+                    print("|O|", end=" ")
+                elif col == 0:
                     print("|  ", end=" ")
                 elif col == 9:
                     print("  |", end=" ")
@@ -334,11 +338,12 @@ def create_user(name: str, sub_name: str) -> dict:
         'sub_name': sub_name,
         'row': 0,
         'column': 0,
-        'level': 1,
-        'exp': 0,
+        'level': 3,
+        'exp': 10,
         'morale': 3,
         'hp': 100,
         'attack': 20,
+        'treasure': 0
     }
     return player
 
@@ -346,7 +351,7 @@ def create_user(name: str, sub_name: str) -> dict:
 def check_player_level(user_info):
     if user_info['exp'] <= 5:
         user_info['level'] = 1
-    elif 5 < user_info['exp'] <= 10:
+    elif 5 < user_info['exp'] < 10:
         user_info['level'] = 2
     else:
         user_info['level'] = 3
@@ -583,13 +588,74 @@ def determine_row(player: dict) -> int:
     >>> determine_row(test_player)
     10
     """
+    rows_to_show = 0
     if player['level'] == 1:
         rows_to_show = 4
-    elif player['level'] == 2:
+    elif player['level'] >= 2:
         rows_to_show = 7
-    else:
-        rows_to_show = 10
     return rows_to_show
+
+
+def generate_random_number():
+    # first one should not be 0
+    secret_number = [random.randint(1, 9)]
+
+    # append two more random numbers
+    while len(secret_number) < 3:
+        number = random.randint(0, 9)
+        if number not in secret_number:
+            secret_number.append(number)
+
+    return secret_number
+
+
+def final_game(player):
+    secret_number = generate_random_number()
+
+    print(secret_number)
+
+    chance = 10
+    while chance <= 10:
+        user_guess = input(f"Guess the number... you have {chance} chances left. ")
+
+        try:
+            guess_list = list(map(int, str(user_guess)))
+        except ValueError:
+            print("That input is invalid!!!")
+            continue
+
+        if len(guess_list) != 3:
+            print("That guess is invalid!!!")
+            continue
+
+        count_A = 0
+        count_B = 0
+
+        for index in range(0, len(guess_list)):
+            if guess_list[index] == secret_number[index]:
+                count_A += 1
+            elif guess_list[index] in secret_number:
+                count_B += 1
+
+        if count_A == 3:
+            print("Congratulations... you got it right. Take your prize.")
+            player['treasure'] += 1
+            break
+        elif count_A == 0 and count_B == 0:
+            print("Out!")
+        else:
+            print(f"Your hint is  : {count_A} A | {count_B} B")
+
+        chance -= 1
+
+    return player
+
+
+def check_if_goal_attained(player):
+    if player['treasure'] == 0:
+        return False
+    else:
+        return True
 
 
 def intro():
@@ -605,6 +671,7 @@ def intro():
     print()
     print(dialogue.intro_3)
     input("Are you ready for a test? Jk, press any button to start. Have fun\n")
+
 
 # excute the program
 def main():
@@ -657,6 +724,8 @@ def main():
             if there_is_a_challenge is True:
                 determine_event(game_board, player, level_1_events, level_2_events, level_3_events)
 
+            # check if player achieved goal
+            achieved_goal = check_if_goal_attained(player)
             # check if player leveled up
             check_player_level(player)
             # determine rows to show
