@@ -597,6 +597,15 @@ def determine_row(player: dict) -> int:
 
 
 def generate_random_number():
+    """
+    generate secret number for the final game
+
+    :precondition:
+    :post condition: list contains 3 randomly generated numbers
+    :post condition: first number in the list should not be 0
+    :post condition: 3 numbers should not be repeated
+    :return: list that contains 3 randomly generated numbers
+    """
     # first one should not be 0
     secret_number = [random.randint(1, 9)]
 
@@ -610,6 +619,14 @@ def generate_random_number():
 
 
 def final_game(player):
+    """
+    Runs final game
+
+    :param player: a dictionary
+    :precondition:
+    :post condition:
+    :return: a player dictionary with treasure information updated
+    """
     secret_number = generate_random_number()
 
     print(secret_number)
@@ -652,6 +669,14 @@ def final_game(player):
 
 
 def check_if_goal_attained(player):
+    """
+    Determine if player has a treasure
+
+    :param player: a dictionary
+    :precondition:
+    :post condition:
+    :return: True if player has a treasure, else False
+    """
     if player['treasure'] == 0:
         return False
     else:
@@ -675,6 +700,10 @@ def intro():
 
 # excute the program
 def main():
+    """
+    Drive the program
+    :return:
+    """
     # default values
     row = 10
     col = 10
