@@ -433,21 +433,21 @@ def sonar(player: dict, game_board: dict):
     You're in the same row as the octopus
     """
     octopus_location = [coordinate for coordinate in game_board if game_board[coordinate] == 'octopus_event']
-    octopus_x_location = octopus_location[0][0]
-    octopus_y_location = octopus_location[0][1]
-    if player['row'] < octopus_x_location:
-        print("The octopus is to the East of you")
-    elif player['row'] > octopus_x_location:
-        print("The octopus is to the West of you")
-    else:
-        print("You're in the same column as the octopus")
-
-    if player['column'] < octopus_y_location:
+    octopus_row = octopus_location[0][0]
+    octopus_column = octopus_location[0][1]
+    if player['row'] < octopus_row:
         print("The octopus is to the South of you")
-    elif player['column'] > octopus_y_location:
+    elif player['row'] > octopus_row:
         print("The octopus is to the North of you")
     else:
         print("You're in the same row as the octopus")
+
+    if player['column'] < octopus_column:
+        print("The octopus is to the East of you")
+    elif player['column'] > octopus_column:
+        print("The octopus is to the West of you")
+    else:
+        print("You're in the same column as the octopus")
 
 
 def get_user_choice(player: dict) -> str:
