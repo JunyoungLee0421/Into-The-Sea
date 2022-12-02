@@ -9,8 +9,9 @@ A01169132
 
 I hope you enjoy playing our game.
 
---------------------------------------------
+
 | Required Elements | Line Number |
+|:------------------|:------------|
 | Tuple             |
 | List              |
 | Comprehension     |
