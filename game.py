@@ -257,8 +257,8 @@ def show_board(board, player, past_location, rows_to_show):
             for col in range(0, 10):
                 if board[(row, col)] == "player_location":
                     print("\033[33m|X|\033[0m", end=" ")
-                elif board[(row, col)] == "octopus_event":
-                    print("|O|", end=" ")
+                # elif board[(row, col)] == "octopus_event":
+                #     print("|O|", end=" ")
                 elif col == 0:
                     print("|  ", end=" ")
                 elif col == 9:
@@ -715,21 +715,6 @@ def final_game(player):
     return player
 
 
-def check_if_goal_attained(player):
-    """
-    Determine if player has a treasure
-
-    :param player: a dictionary
-    :precondition:
-    :post condition:
-    :return: True if player has a treasure, else False
-    """
-    if player['treasure'] is not True:
-        return False
-    else:
-        return True
-
-
 def execute_glow_up(player):
     if player['level'] == 2:
         print(dialogue.level_up_ASCII)
@@ -738,6 +723,7 @@ def execute_glow_up(player):
         print(dialogue.level_up_ASCII)
         print(dialogue.level_3_up)
     return True
+
 
 def intro():
     """
@@ -763,7 +749,6 @@ def main():
     # default values
     row = 10
     col = 10
-    # achieved_goal = False
 
     # create map
     game_board = make_board(row, col)
@@ -811,8 +796,6 @@ def main():
                 if player['treasure'] is True or player['death'] is True:
                     break
 
-            # check if player achieved goal
-            # achieved_goal = check_if_goal_attained(player)
             # check if player leveled up
             if check_player_level(player):
                 # show level up

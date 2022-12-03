@@ -1,11 +1,10 @@
 
-intro_1 = "To find the treasure, you have to find to octopus hiding in the depths of the water. But in order to get\n"\
+intro_1 = "To find the treasure, you have to find the octopus hiding in the depths of the water. But in order to get\n"\
           "strong enough to fight him, you'd need to level up your sub! To level your sub, you have to go to [!]\n" \
           "symbols which indicate events. There are 3 types of events: battle, riddles, and choices. For battles,\n" \
           "if you defeat the monster you gain exp and morale. But if you are defeated by the monster, game over.\n" \
-          "For riddle events, if you get the riddle right, crew morale and exp increases. If you get it wrong, \n" \
-          "your crew loses faith in you and morale decreases. In the cases of choice events, if you make the \n" \
-          "right choice, morale and exp will increase. If you make the wrong choice, morale will decrease.\n"
+          "For riddle and choice events, if you get the answer right or make the right choice, \n" \
+          "morale and exp will increase. If you don't, morale will decrease.\n"
 
 intro_2 = "There are 2 main ways to lose this game: losing all your crew morale or losing monster battles. \n" \
           "Crew morale increases when you do well at events, and decreases if you run away or lose at events. \n" \
@@ -52,10 +51,6 @@ octopus_game = "WOOOOO look who's here!! A challenger? I can't wait to rip into 
                "For example, if my number is 132, and you guessed 123, my hint to you would be 1A 2B. \n"\
                "1A because you guessed the 1 in the correct first position and correct number. \n"\
                "2B because you guessed the 2 and 3 numbers, but they are in the wrong positions. \n" \
-               "If my number was 132, and you guessed 425, my hint to you would be 1B, as the 2 is the right number,\n"\
-               "but you guessed in the wrong position.\n"\
-               "If my number was 132 and you had guessed 456, my hint to you would be 0A 0B as no numbers are right\n" \
-                "\n"\
                "Take your time reading this. Remember, if you lose, you stay down here with me forever! MUAHAHA \n" \
                "\n"\
 
