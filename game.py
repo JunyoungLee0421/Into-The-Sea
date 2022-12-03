@@ -213,6 +213,7 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         event = next(level_3_events)
     elif board[player_location] == "octopus_event":
         final_game(player)
+        return
 
     if event['event_type'] == 'riddle':
         riddle_events(event, player)
@@ -220,8 +221,6 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         choice_events(event, player)
     elif event['event_type'] == 'battle':
         battle_events(event, player)
-
-
 
 
 def show_board(board, player, past_location, rows_to_show):
@@ -672,7 +671,7 @@ def final_game(player):
     print(dialogue.octopus_game)
     chance = 10
     trash_talk = itertools.cycle(dialogue.octopus_trash_talk)
-    while chance <= 10:
+    while chance > 0:
         user_guess = input(f"Guess the number... you have {chance} chances left. ")
 
         try:
@@ -706,6 +705,8 @@ def final_game(player):
             print(f"Your hint is  : {count_A} A | {count_B} B")
 
         chance -= 1
+
+    player['death'] = True
 
     return player
 
