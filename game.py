@@ -714,7 +714,6 @@ def final_game(player: dict) -> dict:
     :return: a player dictionary with treasure or death information updated
     """
     secret_number = generate_random_number()
-    print(secret_number)
     print(dialogue.octopus_ASCII)
     print(dialogue.octopus_game)
 
