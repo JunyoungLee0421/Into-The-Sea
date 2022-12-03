@@ -3,7 +3,7 @@ from unittest.mock import patch
 from game import get_user_choice
 
 
-class TestUserChoice(TestCase):
+class TestGetUserChoice(TestCase):
 
     @patch('builtins.input', side_effect=[1])
     def test_get_user_choice_number(self, _):

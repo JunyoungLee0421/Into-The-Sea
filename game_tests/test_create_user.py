@@ -33,5 +33,3 @@ class TestCreateUser(TestCase):
         expected = {'name': '', 'sub_name': '', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3,
                     'hp': 100, 'attack': 20, 'treasure': False, 'death': False, 'guesses': 3}
         self.assertEqual(expected, create_user(test_name, test_sub_name))
-
-

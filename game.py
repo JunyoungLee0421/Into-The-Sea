@@ -67,21 +67,21 @@ def riddle_events(riddle: dict, player: dict) -> dict:
         guess = input(f"Please select the number corresponding to your answer. You have {guess_counter} tries. "
                       f"Press 5 for a hint, or press 6 to give up. ")
         if guess == riddle['answer']:
-            print("Wow you're so smart! That's the right answer! Exp and morale has increased by 1")
+            print("Wow you're so smart! That's the right answer! Exp and morale has increased by 1.")
             player['exp'] += 1
             player['morale'] += 1
             return player
         elif guess == "6":
-            print("Oh no, we're sad to see you go")
+            print("Oh no, we're sad to see you go.")
             player['morale'] -= 1
             return player
         elif guess == "5":
             print(f"Here's your hint! {riddle['hint']}")
         else:
-            print("That's not the right answer, try again")
+            print("That's not the right answer, try again.")
             guess_counter -= 1
 
-    print("Oh no, you didn't get it! The crew has lost faith in your abilities")
+    print("Oh no, you didn't get it! The crew has lost faith in your abilities.")
     player['morale'] -= 1
     return player
 
@@ -169,25 +169,25 @@ def battle_events(monster: dict, player: dict) -> dict:
                 player['hp'] -= monster_attack
                 print(f"You only have {player['hp']} health left")
             elif player_attack == 'q':
-                print("Well, at least you didn't die. Crew has lost morale from the defeat")
+                print("Well, at least you didn't die. Crew has lost morale from the defeat.")
                 player['morale'] -= 1
                 return player
     elif player_choice == '2':
-        print(f"Sometimes running is the best option")
+        print(f"Sometimes running is the best option.")
     if monster['hp'] <= 0:
-        print("Great job! You slayed the monster! Morale and exp has increased by 1")
+        print("Great job! You slayed the monster! Morale and exp has increased by 1.")
         player['exp'] += 1
         player['morale'] += 1
         player['hp'] = player_current_hp
     if player['hp'] <= 0:
-        print("OH NO!!! You've perished and the ship is sunk")
+        print("OH NO!!! You've perished and the ship is sunk.")
         player['death'] = True
     return player
 
 
 def determine_event(board: dict, player: dict, level_1_events: iter, level_2_events: iter, level_3_events: iter):
     """
-    Determine what type and which event player will play.
+    Determine what type and which event player will play call corresponding event.
 
     :param board: a dictionary
     :param player: a dictionary
@@ -229,14 +229,23 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         player['death'] = True
 
 
-def show_board(board, player, past_location, rows_to_show):
+def show_board(board: dict, player: dict, past_location: tuple, rows_to_show: int):
     """
-    Display board so that players
-    :param board:
-    :param player:
-    :param past_location:
-    :param rows_to_show:
-    :return:
+    Display board based on player information
+
+    :param board: a dictionary
+    :param player: a dictionary
+    :param past_location: a tuple
+    :param rows_to_show: an integer
+    :precondition: board must be a dictionary containing tuples as keys
+    :precondition: board dictionary must have tuples containing 2 integer coordinates as keys
+    :precondition: player dictionary must have an 'row' key and a 'column' key
+    :precondition: rows_to_show should be a non-zero positive integer and smaller than size of row
+    :precondition: past_location should contain two integers within the size of the board
+    :post condition: player's current location will be displayed on the board with X symbol in yellow colour
+    :post condition: event locations will be displayed on the board with ! symbol in corresponding colour
+    :post condition: player's past location will be changed into an empty room
+    :post condition: octopus event should not be displayed in the board
     """
 
     player_location = (player['row'], player['column'])
@@ -356,14 +365,14 @@ def create_user(name: str, sub_name: str) -> dict:
 
 def check_player_level(player: dict) -> bool:
     """
-    Check if player qualifies to level up based on their exp.
+    Check if player qualifies to level up based on their experience points.
 
     :param player: a dictionary
     :precondition: player must have strings as keys
     :precondition: player must have a 'level' key with an int value
     :precondition: player must have a 'exp' key with an int value
     :postcondition: determines if player qualifies for a level up based on current exp
-    :postcondition: level 1 if exp <5, level 2 if exp is between 5 and 10, and level 3 if exp > 10
+    :postcondition: level 1 if exp <5, level 2 if exp is between 5 and 9, and level 3 if exp >= 10
     :return: True if player level has increased, False if it has not
 
     >>> test_player = {'level': 1, 'exp': 2}
@@ -391,7 +400,7 @@ def check_player_level(player: dict) -> bool:
 
 def increase_stats(player: dict) -> dict:
     """
-    Increase stats if player levels up.
+    Increase stats when player levels up.
 
     :param player: a dictionary
     :precondition: player must have strings as keys
@@ -516,7 +525,7 @@ def get_user_choice(player: dict) -> str:
     :postcondition: if player inputs keys not in 123456s, they will be informed key is invalid and to reselect
     :return: user_input as a string
     """
-    valid_inputs=['1', '2', '3', '4', '5', '6', 's']
+    valid_inputs = ['1', '2', '3', '4', '5', '6', 's']
     directions = ["north", "south", "east", "west", "stats", "quit"]
     print("Current Available Options : ", end="")
     for count, direction in enumerate(directions, start=1):
@@ -675,9 +684,8 @@ def determine_row(player: dict) -> int:
 
 def generate_random_number():
     """
-    Generate secret number for the final game.
+    Generate 3 digit secret number for the final game.
 
-    :precondition:
     :post condition: list contains 3 randomly generated numbers
     :post condition: first number in the list should not be 0
     :post condition: 3 numbers should not have repetition
@@ -780,7 +788,6 @@ def intro():
     input("Are you ready for a test? Jk, press any button to start. Have fun! ")
 
 
-# excute the program
 def main():
     """
     Drive the program.
