@@ -1,3 +1,12 @@
+"""
+Patty Hsu
+A01280249
+Tim(Junyoung) Lee
+A01169132
+
+Dialogue for game.py
+"""
+
 
 intro_1 = "To find the treasure, you have to find the octopus hiding in the depths of the water. But in order to get\n"\
           "strong enough to fight him, you'd need to level up your sub! To level your sub, you have to go to [!]\n" \

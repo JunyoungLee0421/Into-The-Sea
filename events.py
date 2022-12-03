@@ -1,3 +1,12 @@
+"""
+Patty Hsu
+A01280249
+Tim(Junyoung) Lee
+A01169132
+
+Events for game.py
+"""
+
 import random
 
 level_1_events = [
