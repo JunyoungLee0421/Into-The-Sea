@@ -70,9 +70,9 @@ level_3_events = [
      'yes_choice': "The stringray tagged you with its tail and stung your crew. Morale has decreased by 1",
      'no_choice': "Good choice. Chances are the sting ray would have stung you. Morale and exp has increased by 1."},
     {'event_type': 'battle', 'monster_name': 'Moby the whale', 'hp': 200, 'attack': 35},
-    {'event_type': 'battle', 'monster_name': 'Jaws the great white shark', 'hp': 205, 'attack': 40},
-    {'event_type': 'battle', 'monster_name': 'Greer the phantom shark', 'hp': 210, 'attack': 45},
-    {'event_type': 'battle', 'monster_name': 'Doom the leviathan', 'hp': 220, 'attack': 50},
+    {'event_type': 'battle', 'monster_name': 'Jaws the great white shark', 'hp': 205, 'attack': 35},
+    {'event_type': 'battle', 'monster_name': 'Greer the phantom shark', 'hp': 205, 'attack': 40},
+    {'event_type': 'battle', 'monster_name': 'Doom the leviathan', 'hp': 205, 'attack': 40},
 ]
 
 random.shuffle(level_1_events)

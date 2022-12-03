@@ -180,7 +180,7 @@ def battle_events(monster: dict, player: dict) -> dict:
         player['hp'] = player_current_hp
     if player['hp'] <= 0:
         print("OH NO!!! You've perished and the ship is sunk")
-        player['death'] = 1
+        player['death'] = True
     return player
 
 
@@ -220,6 +220,8 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         choice_events(event, player)
     elif event['event_type'] == 'battle':
         battle_events(event, player)
+
+
 
 
 def show_board(board, player, past_location, rows_to_show):
@@ -276,6 +278,7 @@ def generate_events(board: dict):
     :precondition: board must be a dictionary containing tuples as keys
     :precondition: tuple keys must contain 2 integer values representing the row and column coordinates respectively
     :postcondition: modifies the original board passed in
+    :postcondition: will only overwrite an empty room, so will always generate 10 events of each level
     :postcondition: from rows 1 to 3 inclusive, will generate a level_one_event as a value to a specific key location
     :postcondition: from rows 4 to 6 inclusive, will generate a level_two_event as a value to a specific key location
     :postcondition: from rows 7 to 9 inclusive, will generate a level_three_event as a value to a specific key location
@@ -286,18 +289,21 @@ def generate_events(board: dict):
         if counter < 10:
             row = random.randint(1, 3)
             column = random.randint(0, 9)
-            board[row, column] = "level_one_event"
-            counter += 1
+            if board[row, column] == "empty_room":
+                board[row, column] = "level_one_event"
+                counter += 1
         elif counter < 20:
             row = random.randint(4, 6)
             column = random.randint(0, 9)
-            board[row, column] = "level_two_event"
-            counter += 1
+            if board[row, column] == "empty_room":
+                board[row, column] = "level_two_event"
+                counter += 1
         elif counter < 30:
             row = random.randint(7, 9)
             column = random.randint(0, 9)
-            board[row, column] = "level_three_event"
-            counter += 1
+            if board[row, column] == "empty_room":
+                board[row, column] = "level_three_event"
+                counter += 1
         elif counter == 30:
             row = random.randint(7, 9)
             column = random.randint(0, 9)
@@ -374,7 +380,7 @@ def increase_stats(player):
     :param player:
     :return:
     """
-    player['hp'] += 50
+    player['hp'] += 75
     player['attack'] += 10
     player['guesses'] -= 1
     return player
@@ -484,16 +490,22 @@ def get_user_choice(player: dict) -> str:
     :postcondition: 1 north, 2 south, 3 east, 4 west, 5 stats, 6 quit, or s for sonar
     :return: user_input as a string
     """
-
+    valid_inputs=['1', '2', '3', '4', '5', '6', 's']
     directions = ["north", "south", "east", "west", "stats", "quit"]
     print("Current Available Options : ", end="")
     for count, direction in enumerate(directions, start=1):
         print(count, direction, end=" ")
     print("")
-    if player['level'] < 3:
-        user_input = input("Which direction do you want to move? ")
-    else:
-        user_input = input("Which direction do you want to move? Or press 's' for sonar ")
+    acceptable_key = False
+    while acceptable_key is False:
+        if player['level'] < 3:
+            user_input = input("Which direction do you want to move? ")
+        else:
+            user_input = input("Which direction do you want to move? Or press 's' for sonar ")
+        if user_input in valid_inputs:
+            acceptable_key = True
+        else:
+            print("That was not an option, please select again!")
 
     return user_input
 
@@ -659,6 +671,7 @@ def final_game(player):
 
     print(dialogue.octopus_game)
     chance = 10
+    trash_talk = itertools.cycle(dialogue.octopus_trash_talk)
     while chance <= 10:
         user_guess = input(f"Guess the number... you have {chance} chances left. ")
 
@@ -684,12 +697,12 @@ def final_game(player):
         if count_A == 3:
             print("Congratulations... you got it right. Take your prize.")
             player['treasure'] = True
-            break
+            return player
         elif count_A == 0 and count_B == 0:
-            print(next(itertools.cycle(dialogue.octopus_trash_talk)))
+            print(next(trash_talk))
             print(f"Your hint is : {count_A} A | {count_B} B, hummm... looks like a good hint.")
         else:
-            print(next(itertools.cycle(dialogue.octopus_trash_talk)))
+            print(next(trash_talk))
             print(f"Your hint is  : {count_A} A | {count_B} B")
 
         chance -= 1
@@ -745,7 +758,7 @@ def main():
     # default values
     row = 10
     col = 10
-    achieved_goal = False
+    # achieved_goal = False
 
     # create map
     game_board = make_board(row, col)
@@ -770,7 +783,7 @@ def main():
     level_2_events = itertools.cycle(events.level_2_events)
     level_3_events = itertools.cycle(events.level_3_events)
     # game starts
-    while achieved_goal is not True or player['death'] != 1:
+    while player['treasure'] is False and player['death'] is False:
         # get input from user
         direction = get_user_choice(player)
         if direction == "6":
@@ -791,8 +804,9 @@ def main():
             if there_is_a_challenge is True:
                 determine_event(game_board, player, level_1_events, level_2_events, level_3_events)
 
+
             # check if player achieved goal
-            achieved_goal = check_if_goal_attained(player)
+            # achieved_goal = check_if_goal_attained(player)
             # check if player leveled up
             if check_player_level(player):
                 # show level up
@@ -807,7 +821,7 @@ def main():
 
     if player['death'] is True:
         print(dialogue.you_lose_ASCII)
-    if achieved_goal is True:
+    if player['treasure'] is True:
         print(dialogue.you_win_ASCII)
 
 

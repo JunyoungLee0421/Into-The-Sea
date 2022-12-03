@@ -57,7 +57,7 @@ octopus_game = "WOOOOO look who's here!! A challenger? I can't wait to rip into 
                "If my number was 132 and you had guessed 456, my hint to you would be 0A 0B as no numbers are right\n" \
                 "\n"\
                "Take your time reading this. Remember, if you lose, you stay down here with me forever! MUAHAHA \n" \
-               "When you're ready, press any key to start."
+               "\n"\
 
 octopus_trash_talk = ["You call that a guess? My friend Urch the urchin does better and he doesn't even have a brain!",
                       "Ha, you'll definitely be staying down here with me, no carbonated water for you down here!",
