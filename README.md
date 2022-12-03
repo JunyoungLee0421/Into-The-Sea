@@ -1,15 +1,17 @@
-COMP1510 202230
+# COMP1510 202230
 
-Assignment 4
+# Assignment 4
 
+## Name / Student number :
 Patty Hsu
 A01280249
 Tim(Junyoung) Lee
 A01169132
 
-I hope you enjoy playing our game.
+## Comment : 
+I hope you enjoy playing our game!
 
-
+## Requirements Table : 
 | Required Elements         | Line Number                |
 |:--------------------------|:---------------------------|
 | Tuple                     | game.py line 36            |
