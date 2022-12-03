@@ -332,8 +332,8 @@ def create_user(name: str, sub_name: str) -> dict:
         'sub_name': sub_name,
         'row': 0,
         'column': 0,
-        'level': 1,
-        'exp': 0,
+        'level': 3,
+        'exp': 10,
         'morale': 3,
         'hp': 100,
         'attack': 20,
@@ -344,13 +344,40 @@ def create_user(name: str, sub_name: str) -> dict:
     return player
 
 
-def check_player_level(user_info):
-    if user_info['exp'] <= 5:
-        user_info['level'] = 1
-    elif 5 < user_info['exp'] < 10:
-        user_info['level'] = 2
+def check_player_level(player):
+    """
+    Check player level based on the level
+
+    :param player:
+    :return:
+    """
+
+    original_level = player['level']
+
+    if player['exp'] < 5:
+        player['level'] = 1
+    elif 5 <= player['exp'] < 10:
+        player['level'] = 2
     else:
-        user_info['level'] = 3
+        player['level'] = 3
+
+    if original_level != player['level']:
+        return True
+    else:
+        return False
+
+
+def increase_stats(player):
+    """
+    Increase stats if player levels up
+
+    :param player:
+    :return:
+    """
+    player['hp'] += 50
+    player['attack'] += 10
+    player['guesses'] -= 1
+    return player
 
 
 # move player location based on the user's input
@@ -628,6 +655,9 @@ def final_game(player):
 
     print(secret_number)
 
+    print(dialogue.octopus_ASCII)
+
+    print(dialogue.octopus_game)
     chance = 10
     while chance <= 10:
         user_guess = input(f"Guess the number... you have {chance} chances left. ")
@@ -653,11 +683,13 @@ def final_game(player):
 
         if count_A == 3:
             print("Congratulations... you got it right. Take your prize.")
-            player['treasure'] += 1
+            player['treasure'] = True
             break
         elif count_A == 0 and count_B == 0:
-            print("Out!")
+            print(next(itertools.cycle(dialogue.octopus_trash_talk)))
+            print(f"Your hint is : {count_A} A | {count_B} B, hummm... looks like a good hint.")
         else:
+            print(next(itertools.cycle(dialogue.octopus_trash_talk)))
             print(f"Your hint is  : {count_A} A | {count_B} B")
 
         chance -= 1
@@ -674,11 +706,20 @@ def check_if_goal_attained(player):
     :post condition:
     :return: True if player has a treasure, else False
     """
-    if player['treasure'] == 0:
+    if player['treasure'] is not True:
         return False
     else:
         return True
 
+
+def execute_glow_up(player):
+    if player['level'] == 2:
+        print(dialogue.level_up_ASCII)
+        print(dialogue.level_2_up)
+    elif player['level'] == 3:
+        print(dialogue.level_up_ASCII)
+        print(dialogue.level_3_up)
+    return True
 
 def intro():
     """
@@ -753,16 +794,21 @@ def main():
             # check if player achieved goal
             achieved_goal = check_if_goal_attained(player)
             # check if player leveled up
-            check_player_level(player)
+            if check_player_level(player):
+                # show level up
+                execute_glow_up(player)
+                # increase stats
+                increase_stats(player)
+
             # determine rows to show
             rows_to_show = determine_row(player)
             # show board with new location
             show_board(game_board, player, past_location, rows_to_show)
 
-    if player['death'] == 1:
-        print('ASCII art showing death')
+    if player['death'] is True:
+        print(dialogue.you_lose_ASCII)
     if achieved_goal is True:
-        print('ASCII art showing victory')
+        print(dialogue.you_win_ASCII)
 
 
 if __name__ == "__main__":

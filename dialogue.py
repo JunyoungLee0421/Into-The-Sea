@@ -16,7 +16,13 @@ intro_2 = "There are 2 main ways to lose this game: losing all your crew morale 
 intro_3 = "If you look at your submarine map right now, you can only see shallow waters. That’s because we’ve \n"\
           "lost our submarine headlights somewhere in these waters. Gain the headlights by leveling up to level 2! \n" \
 
-level_up_ASCII = ""
+level_up_ASCII = """
+    __                   __   __  ______     __
+   / /   ___ _   _____  / /  / / / / __ \   / /
+  / /   / _ \ | / / _ \/ /  / / / / /_/ /  / /
+ / /___/  __/ |/ /  __/ /  / /_/ / ____/  /_/
+/_____/\___/|___/\___/_/   \____/_/      (_)
+"""
 
 
 level_2_up = "Congratulations on reaching level 2! You’ve successfully gotten your subs headlights back so you’re \n" \
@@ -122,7 +128,23 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWk::lc;ldKMWMMMMWx,:dll
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMW0:,;:cckNWMWWMMMM0dololooolxNWWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWXxoxO0XWMMMMMMWWMWWXOxxxxONWWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"""
 
-you_win_ASCII = ""
+you_win_ASCII = """
 
-you_lose_ASCII = ""
+__  ______  __  __   _       _______   __   __
+\ \/ / __ \/ / / /  | |     / /  _/ | / /  / /
+ \  / / / / / / /   | | /| / // //  |/ /  / / 
+ / / /_/ / /_/ /    | |/ |/ // // /|  /  /_/  
+/_/\____/\____/     |__/|__/___/_/ |_/  (_)   
+                                              
+"""
+
+you_lose_ASCII = """
+                         __           __                    
+   __  ______  __  __   / /___  _____/ /_                   
+  / / / / __ \/ / / /  / / __ \/ ___/ __/                   
+ / /_/ / /_/ / /_/ /  / / /_/ (__  ) /_   _    _    _       
+ \__, /\____/\__,_/  /_/\____/____/\__/  (_)  (_)  (_)      
+/____/                                                      
+
+"""
 
