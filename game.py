@@ -64,8 +64,15 @@ def riddle_events(riddle: dict, player: dict) -> dict:
 
     guess_counter = player['guesses']
     while guess_counter >= 1:
-        guess = input(f"Please select the number corresponding to your answer. You have {guess_counter} tries. "
-                      f"Press 5 for a hint, or press 6 to give up. ")
+
+        while True:
+            guess = input(f"Please select the number corresponding to your answer. You have {guess_counter} tries. "
+                          f"Press 5 for a hint, or press 6 to give up. ")
+            if guess not in ('1', '2', '3', '4', '5', '6'):
+                print("That was not an option, please select again!")
+            else:
+                break
+
         if guess == riddle['answer']:
             print("Wow you're so smart! That's the right answer! Exp and morale has increased by 1.")
             player['exp'] += 1
@@ -106,7 +113,14 @@ def choice_events(choice: dict, player: dict) -> dict:
     :return: player dictionary
     """
     print(choice['question'])
-    user_choice = input("Please input 1 for yes or 2 for no ")
+
+    while True:
+        user_choice = input("Please input 1 for yes or 2 for no ")
+        if user_choice not in ('1', '2'):
+            print("That was not an option, please select again!")
+        else:
+            break
+
     if user_choice == "1":
         print(choice['yes_choice'])
         if "increased" in choice['yes_choice']:
@@ -154,11 +168,26 @@ def battle_events(monster: dict, player: dict) -> dict:
     """
     print("A challenger has appeared!!!")
     print(f"{monster['monster_name']} is staring you menacingly down")
-    player_choice = input("Do you want to fight? Press 1 to fight, 2 to run away. ")
+
+    while True:
+        player_choice = input("Do you want to fight? Press 1 to fight, 2 to run away. ")
+        if player_choice not in ("1", "2"):
+            print("That was not an option, please select again!")
+        else:
+            break
+
     player_current_hp = player['hp']
+
     if player_choice == '1':
         while monster['hp'] > 0 and player['hp'] > 0:
-            player_attack = input("Fire your torpedoes captain! Type 't' to shoot or 'q' to run away and lose morale ")
+            while True:
+                player_attack = input("Fire your torpedoes captain! Type 't' to shoot or "
+                                      "'q' to run away and lose morale ")
+                if player_attack.lower() not in ("t", "q"):
+                    print("That was not an option, please select again!")
+                else:
+                    break
+
             if player_attack == 't':
                 attack = random.randint(player['attack']-5, player['attack'] + 10)
                 print(f"Your attack hit! It dealt {attack} damage!")
@@ -340,12 +369,14 @@ def create_user(name: str, sub_name: str) -> dict:
     >>> test_name = "Patty"
     >>> test_sub_name = "Happy"
     >>> create_user(test_name, test_sub_name)
-    {'name': 'Patty', 'sub_name': 'Happy', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20, 'guesses': 3, 'treasure': False, 'death': False}
+    {'name': 'Patty', 'sub_name': 'Happy', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100,
+    'attack': 20, 'guesses': 3, 'treasure': False, 'death': False}
 
     >>> test_name = "Tim"
     >>> test_sub_name = "Energized"
     >>> create_user(test_name, test_sub_name)
-    {'name': 'Tim', 'sub_name': 'Energized', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100, 'attack': 20, 'guesses': 3, 'treasure': False, 'death': False}
+    {'name': 'Tim', 'sub_name': 'Energized', 'row': 0, 'column': 0, 'level': 1, 'exp': 0, 'morale': 3, 'hp': 100,
+    'attack': 20, 'guesses': 3, 'treasure': False, 'death': False}
     """
     player = {
         'name': name,
