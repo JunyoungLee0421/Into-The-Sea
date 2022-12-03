@@ -22,7 +22,7 @@ def make_board(rows: int, columns: int) -> dict:
     :postcondition: each specific row x column coordinate will be stored as a tuple key with row first, then column
     :postcondition: rows and columns will start at 0, and will stop at parameter - 1
     :postcondition: each room created will be given a value of "empty_room"
-    :return: a dictionary
+    :return: board as a dictionary
 
     >>> make_board(1, 1)
     {(0, 0): 'empty_room'}
@@ -64,7 +64,7 @@ def riddle_events(riddle: dict, player: dict) -> dict:
 
     guess_counter = player['guesses']
     while guess_counter >= 1:
-        guess = input(f"Please select the number corresonding to your answer. You have {guess_counter} tries. "
+        guess = input(f"Please select the number corresponding to your answer. You have {guess_counter} tries. "
                       f"Press 5 for a hint, or press 6 to give up. ")
         if guess == riddle['answer']:
             print("Wow you're so smart! That's the right answer! Exp and morale has increased by 1")
@@ -73,6 +73,7 @@ def riddle_events(riddle: dict, player: dict) -> dict:
             return player
         elif guess == "6":
             print("Oh no, we're sad to see you go")
+            player['morale'] -= 1
             return player
         elif guess == "5":
             print(f"Here's your hint! {riddle['hint']}")
@@ -104,7 +105,7 @@ def choice_events(choice: dict, player: dict) -> dict:
     :return: player dictionary
     """
     print(choice['question'])
-    user_choice = input("Please input 1 for yes or 2 for no")
+    user_choice = input("Please input 1 for yes or 2 for no ")
     if user_choice == "1":
         print(choice['yes_choice'])
         if "increased" in choice['yes_choice']:
@@ -202,6 +203,7 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
     :postcondition: all event lists must have dictionaries with a key of 'event_type'
     :postcondition: 'event_type' can have string values of 'riddle', 'choice', or 'battle'
     :postcondition: will call corresponding functions depending on what event type it is
+    :postcondition: if event is 'octopus_event' will call final_game function and return after it is played
     :postcondition: if player morale reaches 0 during the events, sets death to True and player will lose
     """
     player_location = (player['row'], player['column'])
@@ -261,8 +263,6 @@ def show_board(board, player, past_location, rows_to_show):
             for col in range(0, 10):
                 if board[(row, col)] == "player_location":
                     print("\033[33m|X|\033[0m", end=" ")
-                # elif board[(row, col)] == "octopus_event":
-                #     print("|O|", end=" ")
                 elif col == 0:
                     print("|  ", end=" ")
                 elif col == 9:
@@ -323,7 +323,8 @@ def create_user(name: str, sub_name: str) -> dict:
     :precondition: name and sub_name must be strings
     :postcondition: creates a player with user inputted name and sub_name
     :postcondition: all players start at designated location of row 0 column 5
-    :postcondition: all players start at level 1, exp 0, morale 3, hp 100, and attack 20
+    :postcondition: all players start at level 1, exp 0, morale 3, hp 100, attack 20, guesses 3, treasure False,
+    death False
     :return: a dictionary containing player info
 
     >>> test_name = "Patty"
@@ -353,14 +354,26 @@ def create_user(name: str, sub_name: str) -> dict:
     return player
 
 
-def check_player_level(player):
+def check_player_level(player: dict) -> bool:
     """
-    Check player level based on the level
+    Check if player qualifies to level up based on their exp.
 
-    :param player:
-    :return:
+    :param player: a dictionary
+    :precondition: player must have strings as keys
+    :precondition: player must have a 'level' key with an int value
+    :precondition: player must have a 'exp' key with an int value
+    :postcondition: determines if player qualifies for a level up based on current exp
+    :postcondition: level 1 if exp <5, level 2 if exp is between 5 and 10, and level 3 if exp > 10
+    :return: True if player level has increased, False if it has not
+
+    >>> test_player = {'level': 1, 'exp': 2}
+    >>> check_player_level(test_player)
+    False
+
+    >>> test_player = {'level': 1, 'exp': 5}
+    >>> check_player_level(test_player)
+    True
     """
-
     original_level = player['level']
 
     if player['exp'] < 5:
@@ -376,12 +389,21 @@ def check_player_level(player):
         return False
 
 
-def increase_stats(player):
+def increase_stats(player: dict) -> dict:
     """
-    Increase stats if player levels up
+    Increase stats if player levels up.
 
-    :param player:
-    :return:
+    :param player: a dictionary
+    :precondition: player must have strings as keys
+    :precondition: player must have a 'hp' key with an int value greater than 0
+    :precondition: player must have a 'attack' key with an int value greater than 0
+    :precondition: player must have a 'guesses' key with an int value greater than 0
+    :postcondition: player 'hp' increases by 75, 'attack' goes up by 10, 'guesses' goes down by 1
+    :return: player dictionary
+
+    >>> test_player = {'hp': 10, 'attack': 10, 'guesses': 3}
+    >>> increase_stats(test_player)
+    {'hp': 85, 'attack': 20, 'guesses': 2}
     """
     player['hp'] += 75
     player['attack'] += 10
@@ -487,10 +509,11 @@ def get_user_choice(player: dict) -> str:
     Get player input for direction they want to move.
 
     :param player: a dictionary
-
     :precondition: player must have a 'level' key in string format with an integer value
     :postcondition: player will be able to select from a list of directions enumerated
-    :postcondition: 1 north, 2 south, 3 east, 4 west, 5 stats, 6 quit, or s for sonar
+    :postcondition: players less than level 3 will select from 1 north, 2 south, 3 east, 4 west, 5 stats, 6 quit
+    :postcondition: players level 3 will select 1 north, 2 south, 3 east, 4 west, 5 stats, 6 quit, or s for sonar
+    :postcondition: if player inputs keys not in 123456s, they will be informed key is invalid and to reselect
     :return: user_input as a string
     """
     valid_inputs=['1', '2', '3', '4', '5', '6', 's']
@@ -556,6 +579,10 @@ def validate_move(player: dict, direction: str, board: dict) -> bool:
     :postcondition: if player row is 9 and direction is 2, will tell them it's invalid
     :postcondition: if player column is 0 and direction is 4, will tell them it's invalid
     :postcondition: if player column is 9 and direction is 3, will tell them it's invalid
+    :postcondition: if player tries to go to area where they're not strong enough to go based on level, tells them
+    move is not valid
+    :postcondition: if player input is a 5, calls the stats function and move is considered invalid
+    :postcondition: if player input is a s, calls the sonar function and move considered invalid
     :return: True if move valid, False if move invalid
     """
     is_valid = True
@@ -595,12 +622,22 @@ def check_for_challenges(board: dict, player: dict) -> bool:
 
     :param board: a dictionary
     :param player: a dictionary
-    :precondition: player dictionary must contain a key of 'x-coordinate' as a string with an integer value
-    :precondition: player dictionary must contain a key of 'y-coordinate' as a string with an integer value
+    :precondition: player dictionary must contain a key of 'row' as a string with an integer value
+    :precondition: player dictionary must contain a key of 'column' as a string with an integer value
     :precondition: board dictionary must have tuples containing 2 integer coordinates as keys
     :precondition: if tuple coordinates have values associated with them, must be formatted as 'empty_room' if empty
     :postcondition: determines if the current player location on board has an event associated with it
     :return: True if location on board has event, else False
+
+    >>> test_board = {(0, 0): 'empty_room'}
+    >>> test_player = {'row': 0, 'column': 0}
+    >>> check_for_challenges(test_board, test_player)
+    False
+
+    >>> test_board = {(0, 0): 'event'}
+    >>> test_player = {'row': 0, 'column': 0}
+    >>> check_for_challenges(test_board, test_player)
+    True
     """
     player_location = (player['row'], player['column'])
     if board[player_location] == "empty_room":
@@ -638,18 +675,16 @@ def determine_row(player: dict) -> int:
 
 def generate_random_number():
     """
-    generate secret number for the final game
+    Generate secret number for the final game.
 
     :precondition:
     :post condition: list contains 3 randomly generated numbers
     :post condition: first number in the list should not be 0
-    :post condition: 3 numbers should not be repeated
+    :post condition: 3 numbers should not have repetition
     :return: list that contains 3 randomly generated numbers
     """
-    # first one should not be 0
     secret_number = [random.randint(1, 9)]
 
-    # append two more random numbers
     while len(secret_number) < 3:
         number = random.randint(0, 9)
         if number not in secret_number:
@@ -658,28 +693,27 @@ def generate_random_number():
     return secret_number
 
 
-def final_game(player):
+def final_game(player: dict) -> dict:
     """
-    Runs final game
+    Play final number guessing game with player.
 
     :param player: a dictionary
-    :precondition:
-    :post condition:
-    :return: a player dictionary with treasure information updated
+    :precondition: player must have a 'treasure' key as a string with a boolean False value
+    :precondition: player must have a 'death' key as a string with a boolean False value
+    :postcondition: calls the generate_random_number function to generate a secret number
+    :postcondition: if player guesses correctly, treasure value will be set to True
+    :postcondition: if player does not guess correctly, death value set to True
+    :return: a player dictionary with treasure or death information updated
     """
     secret_number = generate_random_number()
-
     print(secret_number)
-
     print(dialogue.octopus_ASCII)
-
     print(dialogue.octopus_game)
 
     chance = 10
     trash_talk = itertools.cycle(dialogue.octopus_trash_talk)
     while chance > 0:
         user_guess = input(f"Guess the number... you have {chance} chances left. ")
-
         try:
             guess_list = list(map(int, str(user_guess)))
         except ValueError:
@@ -720,13 +754,15 @@ def final_game(player):
 
 
 def execute_glow_up(player):
+    """
+    Print ASCII and dialogue for when players level up.
+    """
     if player['level'] == 2:
         print(dialogue.level_up_ASCII)
         print(dialogue.level_2_up)
     elif player['level'] == 3:
         print(dialogue.level_up_ASCII)
         print(dialogue.level_3_up)
-    return True
 
 
 def intro():
@@ -741,26 +777,20 @@ def intro():
     input("I'm just trying to keep you alive! Press any button when you're done reading ")
     print()
     print(dialogue.intro_3)
-    input("Are you ready for a test? Jk, press any button to start. Have fun\n")
+    input("Are you ready for a test? Jk, press any button to start. Have fun! ")
 
 
 # excute the program
 def main():
     """
-    Drive the program
-    :return:
+    Drive the program.
     """
-    # default values
     row = 10
     col = 10
 
-    # create map
     game_board = make_board(row, col)
-
-    # place events
     generate_events(game_board)
 
-    # get user input
     user_name = input("Welcome! What is your name? : ")
     sub_name = input("What's your submarine's name? : ")
     player = create_user(user_name, sub_name)
@@ -768,48 +798,36 @@ def main():
     print(f"Welcome to this new world {player['name']}, We’re glad to have you on board.")
     print("Your crew is excited for the expedition to find the long lost treasure of CST Student Souls "
           "buried deep in the ocean.")
-
     print()
     intro()
     rows_to_show = determine_row(player)
     show_board(game_board, player, (0, 0), rows_to_show)
-    level_1_events = itertools.cycle(events.level_1_events)
+
+    level_1_events = itertools.cycle(events.level_1_events)  # generate iter objects to cycle through in game
     level_2_events = itertools.cycle(events.level_2_events)
     level_3_events = itertools.cycle(events.level_3_events)
     # game starts
-    while player['treasure'] is False and player['death'] is False:
-        # get input from user
+    while player['treasure'] is False and player['death'] is False:  # win or lose conditions
         direction = get_user_choice(player)
-        if direction == "6":
+        if direction == "6":  # 6 is quit, game will break and close if player selects option
             break
         valid_move = validate_move(player, direction, game_board)
 
         if valid_move:
-            # save the past location
-            past_location = (player["row"], player["column"])
-
-            # update the player location
-            player_move(player, direction)
-
-            # check if there is an event
+            past_location = (player["row"], player["column"])  # save past location to overwrite it
+            player_move(player, direction)  # move player to their selected location
             there_is_a_challenge = check_for_challenges(game_board, player)
 
-            # if user entered a challenge room
-            if there_is_a_challenge is True:
+            if there_is_a_challenge is True:  # if user entered a challenge room
                 determine_event(game_board, player, level_1_events, level_2_events, level_3_events)
-                if player['treasure'] is True or player['death'] is True:
+                if player['treasure'] is True or player['death'] is True:  # if win or lose conditions met
                     break
 
-            # check if player leveled up
             if check_player_level(player):
-                # show level up
                 execute_glow_up(player)
-                # increase stats
                 increase_stats(player)
 
-            # determine rows to show
-            rows_to_show = determine_row(player)
-            # show board with new location
+            rows_to_show = determine_row(player)  # determine rows to show of map depending on player level
             show_board(game_board, player, past_location, rows_to_show)
 
     if player['death'] is True:
