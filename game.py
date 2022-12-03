@@ -496,6 +496,7 @@ def get_user_choice(player: dict) -> str:
         print(count, direction, end=" ")
     print("")
     acceptable_key = False
+    user_input = ''
     while acceptable_key is False:
         if player['level'] < 3:
             user_input = input("Which direction do you want to move? ")
@@ -669,6 +670,7 @@ def final_game(player):
     print(dialogue.octopus_ASCII)
 
     print(dialogue.octopus_game)
+
     chance = 10
     trash_talk = itertools.cycle(dialogue.octopus_trash_talk)
     while chance > 0:
@@ -684,29 +686,31 @@ def final_game(player):
             print("That guess is invalid!!!")
             continue
 
-        count_A = 0
-        count_B = 0
+        count_a = 0
+        count_b = 0
 
         for index in range(0, len(guess_list)):
             if guess_list[index] == secret_number[index]:
-                count_A += 1
+                count_a += 1
             elif guess_list[index] in secret_number:
-                count_B += 1
-
-        if count_A == 3:
-            print("Congratulations... you got it right. Take your prize.")
-            player['treasure'] = True
-            return player
-        elif count_A == 0 and count_B == 0:
-            print(next(trash_talk))
-            print(f"Your hint is : {count_A} A | {count_B} B, hummm... looks like a good hint.")
-        else:
-            print(next(trash_talk))
-            print(f"Your hint is  : {count_A} A | {count_B} B")
+                count_b += 1
 
         chance -= 1
 
-    player['death'] = True
+        if count_a == 3:
+            print("Congratulations... you got it right. Take your prize.")
+            player['treasure'] = True
+            return player
+        elif chance == 0:
+            print("HAHAHAHAHA!!! YOU LOST ALL YOUR CHANCES. Now, you are staying with me FOREVER!!!")
+            player['death'] = True
+            return player
+        elif count_a == 0 and count_b == 0:
+            print(next(trash_talk))
+            print(f"Your hint is : {count_a} A | {count_b} B, hummm... looks like a good hint.")
+        else:
+            print(next(trash_talk))
+            print(f"Your hint is  : {count_a} A | {count_b} B")
 
     return player
 
@@ -804,7 +808,8 @@ def main():
             # if user entered a challenge room
             if there_is_a_challenge is True:
                 determine_event(game_board, player, level_1_events, level_2_events, level_3_events)
-
+                if player['treasure'] is True or player['death'] is True:
+                    break
 
             # check if player achieved goal
             # achieved_goal = check_if_goal_attained(player)
