@@ -197,11 +197,12 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
     :precondition: board dictionary must have tuples containing 2 integer coordinates as keys
     :precondition: player dictionary must have an 'row' key and a 'column' key
     :precondition: if tuple coordinates have events associated with them, must be formatted as 'level_one_event',
-    'level_two_event', or 'level_three_event'
+    'level_two_event', 'level_three_event', or 'octopus_event'
     :postcondition: will cycle through a shuffled event list and select an event
     :postcondition: all event lists must have dictionaries with a key of 'event_type'
     :postcondition: 'event_type' can have string values of 'riddle', 'choice', or 'battle'
-    :postcondition: will call corresponding functions depending on what even type it is
+    :postcondition: will call corresponding functions depending on what event type it is
+    :postcondition: if player morale reaches 0 during the events, sets death to True and player will lose
     """
     player_location = (player['row'], player['column'])
     event = {}
@@ -221,6 +222,9 @@ def determine_event(board: dict, player: dict, level_1_events: iter, level_2_eve
         choice_events(event, player)
     elif event['event_type'] == 'battle':
         battle_events(event, player)
+
+    if player['morale'] == 0:
+        player['death'] = True
 
 
 def show_board(board, player, past_location, rows_to_show):
