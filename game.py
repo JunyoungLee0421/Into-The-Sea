@@ -102,6 +102,7 @@ def choice_events(choice: dict, player: dict) -> dict:
     :postcondition: player will be given option to answer yes or no to the choice
     :postcondition: player will be printed yes_choice value if they selected yes, no_choice value if they selected no
     :postcondition: player exp and morale will be increased if they selected the correct option
+    :postcondition: player morale will be decreased if they don't
     :return: player dictionary
     """
     print(choice['question'])
@@ -242,10 +243,10 @@ def show_board(board: dict, player: dict, past_location: tuple, rows_to_show: in
     :precondition: player dictionary must have an 'row' key and a 'column' key
     :precondition: rows_to_show should be a non-zero positive integer and smaller than size of row
     :precondition: past_location should contain two integers within the size of the board
-    :post condition: player's current location will be displayed on the board with X symbol in yellow colour
-    :post condition: event locations will be displayed on the board with ! symbol in corresponding colour
-    :post condition: player's past location will be changed into an empty room
-    :post condition: octopus event should not be displayed in the board
+    :postcondition: player's current location will be displayed on the board with X symbol in yellow colour
+    :postcondition: event locations will be displayed on the board with ! symbol in corresponding colour
+    :postcondition: player's past location will be changed into an empty room
+    :postcondition: octopus event should not be displayed in the board
     """
 
     player_location = (player['row'], player['column'])
