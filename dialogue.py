@@ -132,6 +132,12 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWk::lc;ldKMWMMMMWx,:dll
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMW0:,;:cckNWMWWMMMM0dololooolxNWWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWXxoxO0XWMMMMMMWWMWWXOxxxxONWWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"""
 
+
+you_win_dialogue = "WHAT?! Impossible! How could you have gotten that?! Ugh fine, take these CST student souls. They\n" \
+                  "weren't that tasty anyways!\n" \
+                  "Congratulations Captain! You've successfully completed your voyage! The souls are thankful, and \n"\
+                  "will continue making text-based games in peace."
+
 you_win_ASCII = """
 
 __  ______  __  __   _       _______   __   __

@@ -775,7 +775,7 @@ def final_game(player: dict) -> dict:
         chance -= 1
 
         if count_a == 3:
-            print("Congratulations... you got it right. Take your prize.")
+            print(dialogue.you_win_dialogue)
             player['treasure'] = True
             return player
         elif chance == 0:
